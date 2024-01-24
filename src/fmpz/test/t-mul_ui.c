@@ -23,6 +23,7 @@ TEST_FUNCTION_START(fmpz_mul_ui, state)
         fmpz_t a, b;
         mpz_t d, e, f;
         ulong x;
+        int aliasing;
 
         fmpz_init(a);
         fmpz_init(b);
@@ -36,7 +37,8 @@ TEST_FUNCTION_START(fmpz_mul_ui, state)
         fmpz_get_mpz(d, a);
         x = n_randtest(state);
 
-        if (n_randint(state, 2))
+        aliasing = n_randint(state, 2);
+        if (aliasing)
         {
             fmpz_mul_ui(b, a, x);
         }
@@ -54,8 +56,12 @@ TEST_FUNCTION_START(fmpz_mul_ui, state)
         if (!result)
         {
             flint_printf("FAIL:\n");
-            gmp_printf("d = %Zd, e = %Zd, f = %Zd, x = %Mu\n", d, e, f, x);
-            fflush(stdout);
+            gmp_printf(
+                    "aliasing = %d\n"
+                    "d = %Zd, x = %Mu\n"
+                    "expected: %Zd\n"
+                    "got:      %Zd\n",
+                    aliasing, d, x, e, f);
             flint_abort();
         }
 

@@ -174,7 +174,7 @@ acb_elliptic_rj_taylor_sum(acb_t res, const acb_t E2, const acb_t E3,
 
                     fmpz_divexact_ui(t, c2, 2 * N + 3);
                     if ((M + N) % 2)
-                        fmpz_neg(t, t);
+                        fmpz_inplace_neg(t);
 
                     acb_addmul_fmpz(s3, powtab + m3 * m2dim + m2, t, prec);
 
@@ -438,7 +438,7 @@ acb_elliptic_rj_carlson(acb_t res, const acb_t x, const acb_t y,
     acb_mul(Z, Z, t, prec);
     acb_add(P, X, Y, prec);
     acb_add(P, P, Z, prec);
-    acb_neg(P, P);
+    acb_inplace_neg(P);
     acb_mul_2exp_si(P, P, -1);
 
     /* todo: improve for R_D */
@@ -638,7 +638,7 @@ acb_elliptic_rj_integration(acb_t res, const acb_t x, const acb_t y,
     arb_min(A, acb_realref(x), acb_realref(y), prec);
     arb_min(A, A, acb_realref(z), prec);
     arb_min(A, A, acb_realref(p), prec);
-    arb_neg(A, A);
+    arb_inplace_neg(A);
     arb_one(acb_realref(a));
     arb_max(A, A, acb_realref(a), prec);
     arb_add_ui(A, A, 2, prec);

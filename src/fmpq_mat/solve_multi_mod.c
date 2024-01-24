@@ -87,10 +87,10 @@ _fmpq_mat_solve_multi_mod(fmpq_mat_t X,
        CRT routine.
      */
     if (fmpz_cmpabs(N, D) < 0)
-        fmpz_mul(bound, D, D);
+        fmpz_sqr(bound, D);
     else
-        fmpz_mul(bound, N, N);
-    fmpz_mul_ui(bound, bound, UWORD(2));  /* signs */
+        fmpz_sqr(bound, N);
+    fmpz_mul_2exp(bound, bound, 1);  /* signs */
 
     fmpz_set_ui(pprod, p);
     fmpz_mat_set_nmod_mat(x, Xmod);

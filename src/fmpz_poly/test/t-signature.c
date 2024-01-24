@@ -56,12 +56,12 @@ TEST_FUNCTION_START(fmpz_poly_signature, state)
 
             if (fmpz_sgn(c) < 0)
             {
-                fmpz_neg(c, c);
-                fmpz_neg(b, b);
+                fmpz_inplace_neg(c);
+                fmpz_inplace_neg(b);
             }
 
-            fmpz_mul_ui(rhs, c, 4);
-            fmpz_mul(lhs, b, b);
+            fmpz_mul_2exp(rhs, c, 2);
+            fmpz_sqr(lhs, b);
             fmpz_add(lhs, lhs, rhs);
             fmpz_fdiv_q(lhs, lhs, rhs);
             fmpz_add(a, a, lhs);

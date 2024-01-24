@@ -37,7 +37,7 @@ void fmpq_mpoly_reduce(fmpq_mpoly_t A, const fmpq_mpoly_ctx_t ctx)
     _fmpz_vec_content(g, A->zpoly->coeffs, A->zpoly->length);
 
     if (fmpz_sgn(A->zpoly->coeffs + 0) < 0)
-        fmpz_neg(g, g);
+        fmpz_inplace_neg(g);
 
     if (fmpz_is_zero(g))
     {
@@ -48,7 +48,7 @@ void fmpq_mpoly_reduce(fmpq_mpoly_t A, const fmpq_mpoly_ctx_t ctx)
     {
         if (!fmpz_is_one(g))
         {
-            fmpq_neg(A->content, A->content);
+            fmpq_inplace_neg(A->content);
             _fmpz_vec_neg(A->zpoly->coeffs, A->zpoly->coeffs, A->zpoly->length);
         }
     }

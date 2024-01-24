@@ -53,7 +53,7 @@ slong _num_roots_quartic_positive_discriminant(const fmpz * p)
 
     /* P = 8ac - 3b^2 */
     fmpz_mul(d, p + 4, p + 2);
-    fmpz_mul_ui(d, d, 8);
+    fmpz_mul_2exp(d, d, 3);
     fmpz_mul(a, p + 3, p + 3);
     fmpz_mul_ui(a, a, 3);
     fmpz_sub(d, d, a);
@@ -64,24 +64,24 @@ slong _num_roots_quartic_positive_discriminant(const fmpz * p)
         fmpz_mul(d, p + 4, p + 4);
         fmpz_mul(d, d, p + 4);
         fmpz_mul(d, d, p);
-        fmpz_mul_ui(d, d, 64);
+        fmpz_mul_2exp(d, d, 6);
 
         fmpz_mul(a, p + 4, p + 4);
         fmpz_mul(a, a, p + 2);
         fmpz_mul(a, a, p + 2);
-        fmpz_mul_ui(a, a, 16);
+        fmpz_mul_2exp(a, a, 4);
         fmpz_sub(d, d, a);
 
         fmpz_mul(a, p + 4, p + 3);
         fmpz_mul(a, a, p + 3);
         fmpz_mul(a, a, p + 2);
-        fmpz_mul_ui(a, a, 16);
+        fmpz_mul_2exp(a, a, 4);
         fmpz_add(d, d, a);
 
         fmpz_mul(a, p + 4, p + 4);
         fmpz_mul(a, a, p + 3);
         fmpz_mul(a, a, p + 1);
-        fmpz_mul_ui(a, a, 16);
+        fmpz_mul_2exp(a, a, 4);
         fmpz_sub(d, d, a);
 
         fmpz_mul(a, p + 3, p + 3);

@@ -52,7 +52,7 @@ void qfb_nudupl(qfb_t r, const qfb_t f, fmpz_t D, fmpz_t L)
    {
       fmpz_neg(b1, f->b);
       qfb_nudupl_gcdinv(s, v2, t, b1, a1);
-      fmpz_neg(v2, v2);
+      fmpz_inplace_neg(v2);
    } else
       qfb_nudupl_gcdinv(s, v2, t, f->b, a1);
 
@@ -71,7 +71,7 @@ void qfb_nudupl(qfb_t r, const qfb_t f, fmpz_t D, fmpz_t L)
    {
       fmpz_mul(t, a1, k);
 
-      fmpz_mul(ca, a1, a1);
+      fmpz_sqr(ca, a1);
 
       fmpz_mul_2exp(cb, t, 1);
       fmpz_add(cb, cb, f->b);
@@ -100,7 +100,7 @@ void qfb_nudupl(qfb_t r, const qfb_t f, fmpz_t D, fmpz_t L)
       fmpz_sub(m2, m2, temp);
       fmpz_divexact(m2, m2, a1);
 
-      fmpz_mul(ca, r1, r1);
+      fmpz_sqr(ca, r1);
       fmpz_mul(temp, co1, m2);
       if (fmpz_sgn(co1) < 0)
          fmpz_sub(ca, ca, temp);
@@ -115,15 +115,15 @@ void qfb_nudupl(qfb_t r, const qfb_t f, fmpz_t D, fmpz_t L)
       fmpz_mul_2exp(temp, ca, 1);
       fmpz_fdiv_r(cb, cb, temp);
 
-      fmpz_mul(cc, cb, cb);
+      fmpz_sqr(cc, cb);
       fmpz_sub(cc, cc, D);
       fmpz_divexact(cc, cc, ca);
       fmpz_fdiv_q_2exp(cc, cc, 2);
 
       if (fmpz_sgn(ca) < 0)
       {
-         fmpz_neg(ca, ca);
-         fmpz_neg(cc, cc);
+         fmpz_inplace_neg(ca);
+         fmpz_inplace_neg(cc);
       }
 
       fmpz_clear(m2); fmpz_clear(r1); fmpz_clear(r2);

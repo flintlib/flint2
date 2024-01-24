@@ -47,7 +47,7 @@ integral_tail(mag_t bound, const acb_t z, const acb_t log_z, const acb_t s, cons
             arb_div(C, s1, C, prec);
             arb_mul_2exp_si(C, C, 1);
             arb_mul(s1, acb_realref(a), R, prec);
-            arb_neg(s1, s1);
+            arb_inplace_neg(s1);
             arb_exp(s1, s1, prec);
             arb_mul(C, C, s1, prec);
             arb_get_mag(bound, C);
@@ -87,7 +87,7 @@ _integrand(acb_ptr res, const acb_t t, void * param, slong order, int negate_pow
     acb_exp(u, u, prec);
     acb_mul(u, u, z, prec);
     acb_sub_ui(u, u, 1, prec);
-    acb_neg(u, u);
+    acb_inplace_neg(u);
 
     if (acb_contains_zero(u))
     {
@@ -114,7 +114,7 @@ _integrand(acb_ptr res, const acb_t t, void * param, slong order, int negate_pow
 
             acb_div(u, v, u, prec);
             acb_mul(v, a, t, prec);
-            acb_neg(v, v);
+            acb_inplace_neg(v);
             acb_exp(v, v, prec);
             acb_mul(res, u, v, prec);
         }
@@ -268,7 +268,7 @@ _acb_dirichlet_lerch_phi_integral(acb_t res, const acb_t z, const acb_t s, const
         {
             acb_zero(xa);
             acb_onei(xb);
-            acb_conj(xb, xb);
+            acb_inplace_conj(xb);
             acb_calc_integrate(t, integrand, param, xa, xb, rel_goal, abs_tol, options, prec);
 
             acb_swap(xa, xb);
@@ -363,7 +363,7 @@ _acb_dirichlet_lerch_phi_integral(acb_t res, const acb_t z, const acb_t s, const
 
                 /* max(0, -re(log(z))) + 1 */
                 arb_get_lbound_arf(arb_midref(left), acb_realref(log_z), prec);
-                arb_neg(left, left);
+                arb_inplace_neg(left);
                 if (arf_sgn(arb_midref(left)) < 0)
                     arb_one(left);
                 else
@@ -378,8 +378,8 @@ _acb_dirichlet_lerch_phi_integral(acb_t res, const acb_t z, const acb_t s, const
             }
         }
 
-        arb_neg(left, left);
-        arb_neg(bottom, bottom);
+        arb_inplace_neg(left);
+        arb_inplace_neg(bottom);
 
         acb_zero(t);
 
@@ -470,9 +470,9 @@ _acb_dirichlet_lerch_phi_integral(acb_t res, const acb_t z, const acb_t s, const
         acb_add(t, t, residue, prec);
 
         acb_sub_ui(u, s, 1, prec);
-        acb_neg(u, u);
+        acb_inplace_neg(u);
         acb_gamma(u, u, prec);
-        acb_neg(u, u);
+        acb_inplace_neg(u);
 
         acb_mul(res, t, u, prec);
 

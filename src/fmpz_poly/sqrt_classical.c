@@ -75,7 +75,7 @@ _fmpz_poly_sqrt_classical(fmpz * res, const fmpz * poly, slong len, int exact)
         fmpz_init(u);
         r = _fmpz_vec_init(len);
         _fmpz_vec_set(r, poly, len);
-        fmpz_mul_ui(u, res + m - 1, 2);
+        fmpz_mul_2exp(u, res + m - 1, 1);
 
         for (i = 1; i < (m + 1)/2; i++)
         {
@@ -87,7 +87,8 @@ _fmpz_poly_sqrt_classical(fmpz * res, const fmpz * poly, slong len, int exact)
                 break;
             }
 
-            fmpz_mul_si(t, res + m - i - 1, -2);
+            fmpz_mul_2exp(t, res + m - i - 1, 1);
+            fmpz_inplace_neg(t);
             _fmpz_vec_scalar_addmul_fmpz(r + len - 2*i, res + m - i, i - 1, t);
             fmpz_submul(r + len - 2*i - 1, res + m - i - 1, res + m - i - 1);
         }
@@ -103,7 +104,8 @@ _fmpz_poly_sqrt_classical(fmpz * res, const fmpz * poly, slong len, int exact)
                     break;
                 }
 
-                fmpz_mul_si(t, res + m - i - 1, -2);
+                fmpz_mul_2exp(t, res + m - i - 1, 1);
+                fmpz_inplace_neg(t);
                 _fmpz_vec_scalar_addmul_fmpz(r + len - 2*i, res + m - i, i - 1, t);
                 fmpz_submul(r + len - 2*i - 1, res + m - i - 1, res + m - i - 1);
             }
@@ -123,7 +125,8 @@ _fmpz_poly_sqrt_classical(fmpz * res, const fmpz * poly, slong len, int exact)
                     break;
                 }
 
-                fmpz_mul_si(t, res + m - i - 1, -2);
+                fmpz_mul_2exp(t, res + m - i - 1, 1);
+                fmpz_inplace_neg(t);
                 _fmpz_vec_scalar_addmul_fmpz(r + len - m, res + i, m - i - 1, t);
             }
 

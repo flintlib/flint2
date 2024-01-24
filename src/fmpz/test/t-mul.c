@@ -48,7 +48,7 @@ TEST_FUNCTION_START(fmpz_mul, state)
         {
             fmpz_set(a, b);
             mpz_set(d, e);
-            fmpz_mul(c, a, a);
+            fmpz_sqr(c, a);
         }
         else if (aliasing == 2)
         {
@@ -69,8 +69,12 @@ TEST_FUNCTION_START(fmpz_mul, state)
         if (!result)
         {
             flint_printf("FAIL:\n");
-            gmp_printf("d = %Zd, e = %Zd, f = %Zd, g = %Zd\n", d, e, f, g);
-            fflush(stdout);
+            gmp_printf(
+                    "aliasing = %d\n"
+                    "d = %Zd, e = %Zd\n"
+                    "expected: %Zd\n"
+                    "got:      %Zd\n",
+                    aliasing, d, e, f, g);
             flint_abort();
         }
 

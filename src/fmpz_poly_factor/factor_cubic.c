@@ -77,12 +77,12 @@ static slong binary_sqrt(fmpz_t z, fmpz_t x, slong p)
 
     fmpz_fdiv_r_2exp(z, x, n + 1);
     fmpz_sub_ui(z, z, 3);
-    fmpz_neg(z, z);
+    fmpz_inplace_neg(z);
     fmpz_fdiv_r_2exp(z, z, n + 1);
     fmpz_fdiv_q_2exp(z, z, 1);
 
 #if FLINT_WANT_ASSERT
-    fmpz_mul(t, z, z);
+    fmpz_sqr(t, z);
     fmpz_mul(t, t, x);
     fmpz_sub_ui(t, t, 1);
     fmpz_fdiv_r_2exp(t, t, n);
@@ -93,11 +93,11 @@ static slong binary_sqrt(fmpz_t z, fmpz_t x, slong p)
     while (n < new_p - 1)
     {
         n = 2*n - 2;
-        fmpz_mul(t, z, z);
+        fmpz_sqr(t, z);
         fmpz_fdiv_r_2exp(tx, x, n + 1);
         fmpz_mul(s, tx, t);
         fmpz_sub_ui(s, s, 3);
-        fmpz_neg(s, s);
+        fmpz_inplace_neg(s);
         fmpz_fdiv_r_2exp(s, s, n + 1);
         fmpz_fdiv_q_2exp(s, s, 1);
         fmpz_mul(t, z, s);
@@ -105,7 +105,7 @@ static slong binary_sqrt(fmpz_t z, fmpz_t x, slong p)
         fmpz_swap(z, t);
 
     #if FLINT_WANT_ASSERT
-        fmpz_mul(t, z, z);
+        fmpz_sqr(t, z);
         fmpz_mul(t, t, x);
         fmpz_sub_ui(t, t, 1);
         fmpz_fdiv_r_2exp(t, t, n);
@@ -194,8 +194,8 @@ static void binary_cubic_lift_inv(
     slong n,
     fmpz_t t, fmpz_t t2)  /* temp */
 {
-    fmpz_mul(r2, r, r);
-    fmpz_mul(t, inv, inv);
+    fmpz_sqr(r2, r);
+    fmpz_sqr(t, inv);
     fmpz_mul_2exp(t2, r2, e + 1);
     fmpz_add(t2, t2, s);
     fmpz_mul_2exp(inv, inv, 1);
@@ -270,7 +270,7 @@ static slong binary_cubic_lift(
     }
 
 #if FLINT_WANT_ASSERT
-    fmpz_mul(r2, r, r);
+    fmpz_sqr(r2, r);
     fmpz_mul_2exp(c, r2, e);
     fmpz_add(c, c, a);
     fmpz_sub(c, c, s);
@@ -330,7 +330,7 @@ static slong binary_cubic_lift_continue(
     n *= 2;
 
 #if FLINT_WANT_ASSERT
-    fmpz_mul(r2, r, r);
+    fmpz_sqr(r2, r);
     fmpz_mul_2exp(c, r2, e);
     fmpz_add(c, c, a);
     fmpz_sub(c, c, s);
@@ -399,9 +399,9 @@ static void _fmpz_map_from_ZZ2(fmpz_t x, slong prec)
     fmpz_fdiv_r_2exp(x, x, prec);
     if (fmpz_bits(x) >= prec)
     {
-        fmpz_neg(x, x);
+        fmpz_inplace_neg(x);
         fmpz_fdiv_r_2exp(x, x, prec);
-        fmpz_neg(x, x);
+        fmpz_inplace_neg(x);
     }
 }
 
@@ -466,7 +466,7 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
     }
 
     if (sign_b < 0)
-        fmpz_neg(b, b);
+        fmpz_inplace_neg(b);
 
     /* b >= 2 now, and sign_b has the sign of the original b */
 
@@ -492,8 +492,8 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
     fmpz_init(z);
 
     /* d = b^2 - 4*a^3 = discriminant/-27 */
-    fmpz_mul(d, b, b);
-    fmpz_mul(t1, a, a);
+    fmpz_sqr(d, b);
+    fmpz_sqr(t1, a);
     fmpz_mul(t2, t1, a);
     fmpz_submul_ui(d, t2, 4);
 
@@ -518,10 +518,10 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
 
         fmpz_sqrt(t3, d);
         fmpz_add(t4, b, t3);
-        fmpz_mul_ui(t4, t4, 4);
+        fmpz_mul_2exp(t4, t4, 2);
         fmpz_root(t1, t4, 3);
         fmpz_sub(t4, b, t3);
-        fmpz_mul_ui(t4, t4, 4);
+        fmpz_mul_2exp(t4, t4, 2);
         fmpz_root(t2, t4, 3);
         fmpz_add(t1, t1, t2);
         fmpz_fdiv_q_2exp(x + 0, t1, 1);
@@ -586,7 +586,7 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
     prec = fmpz_bits(a)/2 + 3;
 
     fmpz_mul_si(ta, a, -3);
-    fmpz_mul_si(tb, b, -1);
+    fmpz_neg(tb, b);
 
     FLINT_ASSERT(!fmpz_is_zero(ta));
     FLINT_ASSERT(!fmpz_is_zero(tb));
@@ -613,7 +613,7 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
         fmpz_mul_2exp(ta, ta, alpha - 2*beta3);
         binary_cubic_lift(r, s, inv, ta, tb, 0, prec);
         fmpz_mul_2exp(x + 0, r, beta3);
-        fmpz_neg(x + 0, x + 0);
+        fmpz_inplace_neg(x + 0);
         _fmpz_map_from_ZZ2(x + 0, prec);
 
         fmpz_mul(t1, x + 0, x + 0);
@@ -633,7 +633,7 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
 
             binary_cubic_lift(r, s, inv, ta, tb, 2*beta - 3*alpha, prec);
             fmpz_mul_2exp(x + 0, r, beta - alpha);
-            fmpz_neg(x + 0, x + 0);
+            fmpz_inplace_neg(x + 0);
             _fmpz_map_from_ZZ2(x + 0, prec);
 
             fmpz_mul(t1, x + 0, x + 0);
@@ -647,7 +647,7 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
         cubic_prec = binary_cubic_lift(r, s, inv, ta, tb, 2*beta - 3*alpha, prec);
 
         fmpz_mul_2exp(x + 0, r, beta - alpha);
-        fmpz_neg(x + 0, x + 0);
+        fmpz_inplace_neg(x + 0);
         _fmpz_map_from_ZZ2(x + 0, prec);
 
         fmpz_mul(t1, x + 0, x + 0);
@@ -658,7 +658,7 @@ static int _fmpz_cubic_roots(fmpz * x, fmpz_t a, fmpz_t b)
 
         if (fmpz_equal(t2, b))
         {
-            fmpz_mul_ui(a, a, 4);
+            fmpz_mul_2exp(a, a, 2);
             fmpz_submul(a, x + 0, x + 0);
             fmpz_mul_ui(a, a, 3);
             if (fmpz_is_square(a))
@@ -703,7 +703,7 @@ try_again:
 
         FLINT_ASSERT(2*beta - 3*alpha >= 2);
 
-        fmpz_mul(d, r, r);
+        fmpz_sqr(d, r);
         fmpz_mul_2exp(d, d, 2*beta - 3*alpha - 2);
         fmpz_sub(d, d, s);
         sqrt_prec = binary_sqrt(z, d, cubic_prec);
@@ -750,9 +750,9 @@ cleanup:
 
     if (sign_b < 0)
     {
-        fmpz_neg(x + 0, x + 0);
-        fmpz_neg(x + 1, x + 1);
-        fmpz_neg(x + 2, x + 2);
+        fmpz_inplace_neg(x + 0);
+        fmpz_inplace_neg(x + 1);
+        fmpz_inplace_neg(x + 2);
     }
 
     fmpz_clear(d);
@@ -818,16 +818,16 @@ void _fmpz_poly_factor_cubic(fmpz_poly_factor_t fac,
 
     /* A = b^2 - 3*a*c */
     fmpz_mul(ac, a, c);
-    fmpz_mul(b2, b, b);
+    fmpz_sqr(b2, b);
     fmpz_set(A, b2);
     fmpz_submul_ui(A, ac, 3);
 
     /* B = (9*a*c-2*b^2)*b - 27*a^2*d */
-    fmpz_mul_ui(b2, b2, 2);
+    fmpz_mul_2exp(b2, b2, 1);
     fmpz_mul_ui(ac, ac, 9);
     fmpz_sub(B, ac, b2);
     fmpz_mul(B, B, b);
-    fmpz_mul(T, a, a);
+    fmpz_sqr(T, a);
     fmpz_mul(T, T, d);
     fmpz_submul_ui(B, T, 27);
 

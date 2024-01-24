@@ -29,7 +29,7 @@ acb_csc_pi(acb_t res, const acb_t z, slong prec)
         arb_const_pi(acb_realref(res), prec);
         arb_mul(acb_imagref(res), acb_imagref(z), acb_realref(res), prec);
         arb_csch(acb_imagref(res), acb_imagref(res), prec);
-        arb_neg(acb_imagref(res), acb_imagref(res));
+        arb_inplace_neg(acb_imagref(res));
         arb_zero(acb_realref(res));
     }
     else
@@ -46,7 +46,7 @@ acb_csc_pi(acb_t res, const acb_t z, slong prec)
                 acb_mul(res, t, t, prec + 4);
                 acb_sub_ui(res, res, 1, prec + 4);
                 acb_div(res, t, res, prec);
-                acb_neg(res, res);
+                acb_inplace_neg(res);
             }
             else
             {

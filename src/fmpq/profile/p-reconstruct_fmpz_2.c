@@ -49,11 +49,11 @@ double profile_it(
         fmpz_randbits(D, state, Dbits);
         fmpz_randbits(m, state, mbits);
 
-        fmpz_abs(N, N);
-        fmpz_abs(D, D);
-        fmpz_abs(m, m);
+        fmpz_inplace_abs(N);
+        fmpz_inplace_abs(D);
+        fmpz_inplace_abs(m);
 
-        fmpz_mul_ui(r, N, 2);
+        fmpz_mul_2exp(r, N, 1);
 
         fmpz_randm(fmpq_numref(x), state, r);
         fmpz_sub(fmpq_numref(x), fmpq_numref(x), N);

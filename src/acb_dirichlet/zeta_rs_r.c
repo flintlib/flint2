@@ -127,7 +127,7 @@ acb_dirichlet_zeta_rs_r(acb_t res, const acb_t s, slong K, slong prec)
 
         /* p = 1 + 2(N-a) */
         arb_sub_fmpz(p, a, N, wp);
-        arb_neg(p, p);
+        arb_inplace_neg(p);
         arb_mul_2exp_si(p, p, 1);
         arb_add_ui(p, p, 1, wp);
 
@@ -174,7 +174,7 @@ acb_dirichlet_zeta_rs_r(acb_t res, const acb_t s, slong K, slong prec)
             if (j % 4 == 1)
                 acb_div_onei(v, v);
             else if (j % 4 == 2)
-                acb_neg(v, v);
+                acb_inplace_neg(v);
             else if (j % 4 == 3)
                 acb_mul_onei(v, v);
 
@@ -197,7 +197,7 @@ acb_dirichlet_zeta_rs_r(acb_t res, const acb_t s, slong K, slong prec)
     arb_const_pi(acb_imagref(u), wp);
     arb_mul_2exp_si(acb_imagref(u), acb_imagref(u), -3);
     arb_sub(acb_realref(u), acb_realref(u), acb_imagref(u), wp);
-    arb_neg(acb_realref(u), acb_realref(u));
+    arb_inplace_neg(acb_realref(u));
     arb_sin_cos(acb_imagref(U), acb_realref(U), acb_realref(u), wp);
 
     /* S = (-1)^(N-1) * U * a^(-sigma) * S */
@@ -207,7 +207,7 @@ acb_dirichlet_zeta_rs_r(acb_t res, const acb_t s, slong K, slong prec)
     arb_pow(acb_realref(u), a, acb_realref(u), wp);
     acb_mul_arb(S, S, acb_realref(u), wp);
     if (fmpz_is_even(N))
-        acb_neg(S, S);
+        acb_inplace_neg(S);
 
     if (_acb_vec_estimate_allocated_bytes(fmpz_get_ui(N) / 6, wp) < 4e9)
         acb_dirichlet_powsum_sieved(u, s, fmpz_get_ui(N), 1, wp);

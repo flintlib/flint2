@@ -302,9 +302,9 @@ arb_hypgeom_sum_fmpq_imag_arb_rs(arb_t res_real, arb_t res_imag, const fmpq * a,
         l = j - jlen + 1;
 
         for (i = (2 - l) & 3; i < jlen; i += 4)
-            fmpz_neg(cs + i, cs + i);
+            fmpz_inplace_neg(cs + i);
         for (i = (3 - l) & 3; i < jlen; i += 4)
-            fmpz_neg(cs + i, cs + i);
+            fmpz_inplace_neg(cs + i);
 
         if (l % 2 == 0)
         {
@@ -348,17 +348,17 @@ arb_hypgeom_sum_fmpq_imag_arb_rs(arb_t res_real, arb_t res_imag, const fmpq * a,
             if (m % 4 == 1)
             {
                 arb_swap(s_real, s_imag);
-                arb_neg(s_real, s_real);
+                arb_inplace_neg(s_real);
             }
             else if (m % 4 == 2)
             {
-                arb_neg(s_real, s_real);
-                arb_neg(s_imag, s_imag);
+                arb_inplace_neg(s_real);
+                arb_inplace_neg(s_imag);
             }
             else if (m % 4 == 3)
             {
                 arb_swap(s_real, s_imag);
-                arb_neg(s_imag, s_imag);
+                arb_inplace_neg(s_imag);
             }
 
             j = m - 1;

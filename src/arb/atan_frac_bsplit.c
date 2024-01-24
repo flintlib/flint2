@@ -44,8 +44,8 @@ bsplit(fmpz_t p1, fmpz_t q1, fmpz_t r1,
 
         if (alternate)
         {
-            fmpz_neg(p1, p1);
-            fmpz_neg(q1, q1);
+            fmpz_inplace_neg(p1);
+            fmpz_inplace_neg(q1);
         }
     }
     else
@@ -102,7 +102,7 @@ arb_atan_frac_bsplit(arb_t s, const fmpz_t p, const fmpz_t q, int hyperbolic, sl
         fmpz_init(t);
         fmpz_neg(t, p);
         arb_atan_frac_bsplit(s, t, q, hyperbolic, prec);
-        arb_neg(s, s);
+        arb_inplace_neg(s);
         fmpz_clear(t);
         return;
     }
@@ -134,8 +134,8 @@ arb_atan_frac_bsplit(arb_t s, const fmpz_t p, const fmpz_t q, int hyperbolic, sl
     N = FLINT_MAX(N, 1);
     N = FLINT_MIN(N, 4 * prec);
 
-    fmpz_mul(p2, p, p);
-    fmpz_mul(q2, q, q);
+    fmpz_sqr(p2, p);
+    fmpz_sqr(q2, q);
     bsplit(P, Q, R, p, q, p2, q2, !hyperbolic, 0, N, 0);
 
     mag_set_fmpz(err, p);

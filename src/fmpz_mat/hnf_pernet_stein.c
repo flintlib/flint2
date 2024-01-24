@@ -96,7 +96,7 @@ add_columns(fmpz_mat_t H, const fmpz_mat_t B, const fmpz_mat_t H1, flint_rand_t 
         fmpz_addmul(den, fmpz_mat_entry(B, n - 1, i), fmpz_mat_entry(k, i, 0));
     neg = (fmpz_sgn(den) < 0);
     if (neg)
-        fmpz_neg(den, den);
+        fmpz_inplace_neg(den);
 
     for (j = 0; j < B->c - H1->c; j++)
     {
@@ -115,7 +115,7 @@ add_columns(fmpz_mat_t H, const fmpz_mat_t B, const fmpz_mat_t H1, flint_rand_t 
         _fmpq_mul(fmpq_numref(alpha), fmpq_denref(alpha),
                 fmpq_numref(alpha), fmpq_denref(alpha), one, den);
         if (neg)
-            fmpq_neg(alpha, alpha);
+            fmpq_inplace_neg(alpha);
 
         /* x_i += alpha*k */
         for (i = 0; i < n; i++)
@@ -348,7 +348,7 @@ double_det(fmpz_t d1, fmpz_t d2, const fmpz_mat_t B, const fmpz_mat_t c,
             fmpz_set(bound, s1);
         else
             fmpz_set(bound, s2);
-        fmpz_mul_ui(bound, bound, UWORD(2));
+        fmpz_mul_2exp(bound, bound, 1);
 
         fmpz_one(prod);
         P = _perm_init(n);

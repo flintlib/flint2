@@ -40,7 +40,7 @@ int main(void)
       printf("Read failed\n");
       abort();
    }
-   fmpz_neg(n0, n0);
+   fmpz_inplace_neg(n0);
 
    iters = 10;
 
@@ -174,7 +174,7 @@ done:
                {
                   if (fmpz_cmpabs(pow->a, pow->b) != 0)
                   {
-                     fmpz_abs(pow->b, pow->b);
+                     fmpz_inplace_abs(pow->b);
                      fmpz_sub(g, pow->b, pow->a);
                      fmpz_sub(pow->a, g, pow->a);
                   }

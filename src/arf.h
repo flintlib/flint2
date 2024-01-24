@@ -106,6 +106,7 @@ arf_rnd_to_mpfr(arf_rnd_t rnd)
 
 /* Assumes non-special value */
 #define ARF_NEG(x) (ARF_XSIZE(x) ^= 1)
+#define ARF_ABS(x) (ARF_XSIZE(x) &= ((~(mp_size_t) 0) ^ (mp_size_t) 1))
 
 /* Direct access to the limb data. */
 #define ARF_NOPTR_D(x)   ((x)->d.noptr.d)
@@ -347,6 +348,41 @@ arf_neg(arf_t y, const arf_t x)
 }
 
 ARF_INLINE void
+arf_abs(arf_t y, const arf_t x)
+{
+    if (arf_sgn(x) < 0)
+        arf_neg(y, x);
+    else
+        arf_set(y, x);
+}
+
+ARF_INLINE void
+arf_inplace_neg(arf_t y)
+{
+    if (FLINT_UNLIKELY(arf_is_special(y)))
+    {
+        if (arf_is_pos_inf(y))
+            arf_neg_inf(y);
+        else if (arf_is_neg_inf(y))
+            arf_pos_inf(y);
+    }
+    else
+        ARF_NEG(y);
+}
+
+ARF_INLINE void
+arf_inplace_abs(arf_t y)
+{
+    if (FLINT_UNLIKELY(arf_is_special(y)))
+    {
+        if (arf_is_neg_inf(y))
+            arf_pos_inf(y);
+    }
+    else
+        ARF_ABS(y);
+}
+
+ARF_INLINE void
 arf_init_set_ui(arf_t x, ulong v)
 {
     if (v == 0)
@@ -414,7 +450,7 @@ ARF_INLINE void
 arf_init_neg_shallow(arf_t z, const arf_t x)
 {
     *z = *x;
-    arf_neg(z, z);
+    arf_inplace_neg(z);
 }
 
 ARF_INLINE void
@@ -430,7 +466,7 @@ ARF_INLINE void
 arf_init_neg_mag_shallow(arf_t z, const mag_t x)
 {
     arf_init_set_mag_shallow(z, x);
-    arf_neg(z, z);
+    arf_inplace_neg(z);
 }
 
 ARF_INLINE int
@@ -553,15 +589,6 @@ arf_max(arf_t z, const arf_t a, const arf_t b)
         arf_set(z, a);
     else
         arf_set(z, b);
-}
-
-ARF_INLINE void
-arf_abs(arf_t y, const arf_t x)
-{
-    if (arf_sgn(x) < 0)
-        arf_neg(y, x);
-    else
-        arf_set(y, x);
 }
 
 ARF_INLINE slong
@@ -782,7 +809,7 @@ arf_neg_mul(arf_t z, const arf_t x, const arf_t y, slong prec, arf_rnd_t rnd)
     if (arf_is_special(y))
     {
         arf_mul(z, x, y, prec, rnd);
-        arf_neg(z, z);
+        arf_inplace_neg(z);
         return 0;
     }
     else

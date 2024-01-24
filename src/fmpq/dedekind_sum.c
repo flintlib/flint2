@@ -42,19 +42,19 @@ fmpq_dedekind_sum_naive(fmpq_t s, const fmpz_t h, const fmpz_t k)
 
         fmpz_mul(q1, q1, k);
         fmpz_sub(q1, i, q1);
-        fmpz_mul_ui(q1, q1, 2);
+        fmpz_mul_2exp(q1, q1, 1);
         fmpz_sub(q1, q1, k);
 
         fmpz_mul(q2, q2, k);
         fmpz_sub(q2, j, q2);
-        fmpz_mul_ui(q2, q2, 2);
+        fmpz_mul_2exp(q2, q2, 1);
         fmpz_sub(q2, q2, k);
 
         fmpz_addmul(fmpq_numref(s), q1, q2);
     }
 
     fmpz_mul(fmpq_denref(s), k, k);
-    fmpz_mul_ui(fmpq_denref(s), fmpq_denref(s), 4);
+    fmpz_mul_2exp(fmpq_denref(s), fmpq_denref(s), 2);
     fmpq_canonicalise(s);
 
     fmpz_clear(i);

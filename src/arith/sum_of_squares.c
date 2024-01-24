@@ -43,7 +43,7 @@ sum_of_two_squares(fmpz_t r, const fmpz_t n)
         }
     }
 
-    fmpz_mul_ui(r, r, 4);
+    fmpz_mul_2exp(r, r, 2);
     fmpz_factor_clear(fac);
 }
 
@@ -55,7 +55,7 @@ sum_of_four_squares(fmpz_t r, const fmpz_t n)
     if (v == 0)
     {
         arith_divisor_sigma(r, 1, n);
-        fmpz_mul_ui(r, r, 8);
+        fmpz_mul_2exp(r, r, 3);
     }
     else
     {
@@ -81,7 +81,7 @@ sum_of_squares_recursive(fmpz_t r, slong k, ulong n)
         arith_sum_of_squares(t, k - 1, u);
 
         if (j > 0)
-            fmpz_mul_ui(t, t, 2);
+            fmpz_mul_2exp(t, t, 1);
         fmpz_add(r, r, t);
 
         j += 2 * i + 1;

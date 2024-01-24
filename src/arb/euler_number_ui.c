@@ -67,7 +67,7 @@ arb_euler_number_ui_beta(arb_t res, ulong n, slong prec)
     arb_mul_2exp_si(res, res, 1);
 
     if (n % 4 == 2)
-        arb_neg(res, res);
+        arb_inplace_neg(res);
 
     arb_clear(t);
 }
@@ -578,7 +578,7 @@ arb_fmpz_euler_number_ui_multi_mod(fmpz_t num, ulong n, double alpha)
     if (n % 4 == 2)
     {
         fmpz_sub(num, M, num);
-        fmpz_neg(num, num);
+        fmpz_inplace_neg(num);
     }
 
 #if TIMING
@@ -683,7 +683,7 @@ arb_euler_number_ui(arb_t res, ulong n, slong prec)
     {
         arb_set_ui(res, arb_euler_number_tab[n / 2]);
         if (n % 4 == 2)
-            arb_neg(res, res);
+            arb_inplace_neg(res);
         arb_set_round(res, res, prec);
         return;
     }

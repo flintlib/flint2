@@ -47,7 +47,7 @@ _fexpr_parse_arf(arf_t res, const fexpr_t expr)
         fexpr_t t;
         fexpr_view_arg(t, expr, 0);
         success = _fexpr_parse_arf(res, t);
-        arf_neg(res, res);
+        arf_inplace_neg(res);
         return success;
     }
 
@@ -249,7 +249,7 @@ fmpq_set_decimal(fmpq_t res, const char * inp, slong max_bits)
     if (inp[0] == '-')
     {
         success = fmpq_set_decimal(res, inp + 1, max_bits);
-        fmpq_neg(res, res);
+        fmpq_inplace_neg(res);
         return success;
     }
 

@@ -127,15 +127,15 @@ void qfb_nucomp(qfb_t r, const qfb_t f, const qfb_t g, fmpz_t D, fmpz_t L)
       fmpz_mul_2exp(temp, ca, 1);
       fmpz_fdiv_r(cb, cb, temp);
 
-      fmpz_mul(cc, cb, cb);
+      fmpz_sqr(cc, cb);
       fmpz_sub(cc, cc, D);
       fmpz_divexact(cc, cc, ca);
       fmpz_fdiv_q_2exp(cc, cc, 2);
 
       if (fmpz_sgn(ca) < 0)
       {
-         fmpz_neg(ca, ca);
-         fmpz_neg(cc, cc);
+         fmpz_inplace_neg(ca);
+         fmpz_inplace_neg(cc);
       }
 
       fmpz_clear(m1); fmpz_clear(m2); fmpz_clear(r1); fmpz_clear(r2);

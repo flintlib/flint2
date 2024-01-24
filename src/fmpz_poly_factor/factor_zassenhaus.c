@@ -203,8 +203,8 @@ void _fmpz_poly_factor_zassenhaus(fmpz_poly_factor_t final_fac,
                below
             */
             fmpz_mul(T, T, f->coeffs + f->length - 1);
-            fmpz_abs(T, T);
-            fmpz_mul_ui(T, T, 2);
+            fmpz_inplace_abs(T);
+            fmpz_mul_2exp(T, T, 1);
             fmpz_add_ui(T, T, 1);
             a = fmpz_clog_ui(T, p);
 
@@ -254,7 +254,7 @@ void fmpz_poly_factor_zassenhaus(fmpz_poly_factor_t fac, const fmpz_poly_t G)
     {
         fmpz_poly_content(&fac->c, G);
         if (fmpz_sgn(fmpz_poly_lead(G)) < 0)
-            fmpz_neg(&fac->c, &fac->c);
+            fmpz_inplace_neg(&fac->c);
         fmpz_poly_scalar_divexact_fmpz(g, G, &fac->c);
         fmpz_poly_factor_insert(fac, g, 1);
     }

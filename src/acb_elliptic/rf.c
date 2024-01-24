@@ -123,7 +123,7 @@ acb_elliptic_rf_taylor_sum(acb_t res, const acb_t E2, const acb_t E3, slong nter
                 fmpz_divexact_ui(e, d, 2 * N + 1);
 
                 if (x % 2 == 1)
-                    fmpz_neg(e, e);
+                    fmpz_inplace_neg(e);
 
                 if (x != 0 || y != 0)
                 {
@@ -267,14 +267,14 @@ acb_elliptic_rf(acb_t res, const acb_t x, const acb_t y, const acb_t z,
 
     acb_div(X, xx, t, wp);
     acb_sub_ui(X, X, 1, wp);
-    acb_neg(X, X);
+    acb_inplace_neg(X);
 
     acb_div(Y, yy, t, wp);
     acb_sub_ui(Y, Y, 1, wp);
-    acb_neg(Y, Y);
+    acb_inplace_neg(Y);
 
     acb_add(Z, X, Y, wp);
-    acb_neg(Z, Z);
+    acb_inplace_neg(Z);
 
     /* E2 = XY-Z^2, E3 = XYZ */
     acb_mul(E2, X, Y, wp);

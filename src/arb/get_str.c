@@ -152,7 +152,7 @@ _arb_digits_as_float_str(char ** d, fmpz_t e, slong minfix, slong maxfix)
         else
         {
             (*d)[n + (n > 1) + 1] = '-';
-            fmpz_neg(e, e);
+            fmpz_inplace_neg(e);
         }
 
         fmpz_get_str((*d) + n + (n > 1) + 2, 10, e);  /* writes null byte */
@@ -253,7 +253,7 @@ _arb_digits_round_inplace(char * s, flint_bitcnt_t * shift, fmpz_t error, slong 
         }
 
         fmpz_set_str(error, s + n, 10);
-        fmpz_neg(error, error);
+        fmpz_inplace_neg(error);
 
         /* add 1 ulp to the leading digits */
         carry = 1;
@@ -332,7 +332,7 @@ arb_get_str_parts(int * negative, char **mid_digits, fmpz_t mid_exp,
 
     arb_get_fmpz_mid_rad_10exp(mid, rad, exp, x, FLINT_MAX(n, 1));
     *negative = arf_sgn(arb_midref(x)) < 0;
-    fmpz_abs(mid, mid);
+    fmpz_inplace_abs(mid);
 
     *mid_digits = fmpz_get_str(NULL, 10, mid);
     *rad_digits = NULL;
@@ -390,7 +390,7 @@ arb_get_str_parts(int * negative, char **mid_digits, fmpz_t mid_exp,
     {
         _arb_digits_round_inplace(*mid_digits, &shift, err, n, ARF_RND_NEAR);
         fmpz_add_ui(mid_exp, exp, shift);
-        fmpz_abs(err, err);
+        fmpz_inplace_abs(err);
         fmpz_add(rad, rad, err);
     }
 

@@ -45,7 +45,7 @@ _fmpq_poly_compose2(fmpz * res, const fmpz * poly1, const fmpz_t den1,
 
     _fmpz_vec_content(den, res, len);
     if (fmpz_sgn(res + len - 1) < 0)
-        fmpz_neg(den, den);
+        fmpz_inplace_neg(den);
     _fmpz_vec_scalar_divexact_fmpz(res, res, len, den);
 
     fmpz_clear(den);
@@ -144,7 +144,7 @@ qqbar_scalar_op(qqbar_t res, const qqbar_t x, const fmpz_t a, const fmpz_t b, co
         if (!fmpz_is_one(c))
         {
             if (fmpz_equal_si(c, -1))
-                acb_neg(w, w);
+                acb_inplace_neg(w);
             else
                 acb_div_fmpz(w, w, c, prec);
         }

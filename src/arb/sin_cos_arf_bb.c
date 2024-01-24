@@ -37,7 +37,7 @@ bsplit(fmpz_t T, fmpz_t Q, flint_bitcnt_t * Qexp,
     {
         fmpz_mul2_uiui(T, xpow, (2 * a + 4), (2 * a + 5));
         fmpz_mul_2exp(T, T, 2 * r);
-        fmpz_neg(T, T);
+        fmpz_inplace_neg(T);
         fmpz_add(T, T, xpow + 1);
 
         cc = flint_ctz((2 * a + 4));
@@ -47,7 +47,7 @@ bsplit(fmpz_t T, fmpz_t Q, flint_bitcnt_t * Qexp,
 
         cc = flint_ctz((2 * a + 2));
         fmpz_mul2_uiui(Q, Q, (2 * a + 2) >> cc, (2 * a + 3));
-        fmpz_neg(Q, Q);
+        fmpz_inplace_neg(Q);
         *Qexp += 2 * r + cc;
     }
     else
@@ -201,7 +201,7 @@ _arb_sin_sum_bs_powtab(fmpz_t T, fmpz_t Q, flint_bitcnt_t * Qexp,
     length = _arb_compute_bs_exponents(xexp, N);
 
     xpow = _fmpz_vec_init(length);
-    fmpz_mul(xpow, x, x);
+    fmpz_sqr(xpow, x);
 
     /* build x^i table */
     for (i = 1; i < length; i++)
@@ -313,7 +313,7 @@ arb_sin_cos_fmpz_div_2exp_bsplit(arb_t wsin, arb_t wcos, const fmpz_t x, flint_b
     /* compute cos from sin */
     arb_mul(wcos, wsin, wsin, prec);
     arb_sub_ui(wcos, wcos, 1, prec);
-    arb_neg(wcos, wcos);
+    arb_inplace_neg(wcos);
     arb_sqrt(wcos, wcos, prec);
 
     fmpz_clear(T);
@@ -467,7 +467,7 @@ arb_sin_cos_arf_bb(arb_t zsin, arb_t zcos, const arf_t x, slong prec)
 
     /* Convert x/2^q to a fixed-point number. */
     inexact = arf_get_fmpz_fixed_si(t, x, -wp + q);
-    fmpz_abs(t, t);
+    fmpz_inplace_abs(t);
 
     /* Aliasing of z and x is safe now that only use t. */
     /* Start with z = 1. */
@@ -585,12 +585,12 @@ arb_sin_cos_arf_bb(arb_t zsin, arb_t zcos, const arf_t x, slong prec)
 
         arb_mul(tmp1, zcos, zcos, wp);
         arb_sub_ui(tmp1, tmp1, 1, wp);
-        arb_neg(tmp1, tmp1);
+        arb_inplace_neg(tmp1);
         arb_sqrt(zsin, tmp1, wp);
     }
 
     if (negative)
-        arb_neg(zsin, zsin);
+        arb_inplace_neg(zsin);
 
     arb_set_round(zsin, zsin, prec);
     arb_set_round(zcos, zcos, prec);

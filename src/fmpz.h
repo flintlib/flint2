@@ -32,7 +32,17 @@ void _fmpz_clear_mpz(fmpz f);
 void _fmpz_cleanup_mpz_content(void);
 void _fmpz_cleanup(void);
 
-mpz_ptr _fmpz_promote(fmpz_t f);
+FMPZ_INLINE mpz_ptr _fmpz_promote(fmpz_t f)
+{
+    if (!COEFF_IS_MPZ(*f))
+    {
+        mpz_ptr mf = _fmpz_new_mpz();
+        *f = PTR_TO_COEFF(mf);
+        return mf;
+    }
+    else
+        return COEFF_TO_PTR(*f);
+}
 mpz_ptr _fmpz_promote_val(fmpz_t f);
 
 FMPZ_INLINE
@@ -233,15 +243,15 @@ void fmpz_get_signed_uiui(ulong * hi, ulong * lo, const fmpz_t x);
 FMPZ_INLINE void
 fmpz_set_signed_uiui(fmpz_t r, ulong hi, ulong lo)
 {
-    if (((slong) hi) < 0)
+    if ((slong) hi >= 0)
+    {
+        fmpz_set_uiui(r, hi, lo);
+    }
+    else
     {
         hi = -hi - (lo != 0);
         lo = -lo;
         fmpz_neg_uiui(r, hi, lo);
-    }
-    else
-    {
-        fmpz_set_uiui(r, hi, lo);
     }
 }
 
@@ -307,7 +317,18 @@ int fmpz_is_odd(const fmpz_t f)
         return mpz_odd_p(COEFF_TO_PTR(*f));
 }
 
-int fmpz_sgn(const fmpz_t f);
+FMPZ_INLINE
+int fmpz_sgn(const fmpz_t f)
+{
+    slong fs = *f;
+
+    if (fs == 0)
+        return 0;
+    else if (!COEFF_IS_MPZ(fs))
+        return fs > 0 ? 1 : -1;
+    else
+        return COEFF_TO_PTR(fs)->_mp_size > 0 ? 1 : -1;
+}
 
 int fmpz_abs_fits_ui(const fmpz_t f);
 int fmpz_fits_si(const fmpz_t f);
@@ -366,8 +387,40 @@ FMPZ_INLINE void fmpz_sub_si(fmpz_t f, const fmpz_t g, slong x)
 void fmpz_abs(fmpz_t f1, const fmpz_t f2);
 void fmpz_neg(fmpz_t f1, const fmpz_t f2);
 
+FMPZ_INLINE
+void fmpz_inplace_neg(fmpz_t f)
+{
+    if (!COEFF_IS_MPZ(*f))
+        *f = -*f;
+    else
+    {
+        mpz_ptr mf = COEFF_TO_PTR(*f);
+        mf->_mp_size = -mf->_mp_size;
+    }
+}
+
+FMPZ_INLINE
+void fmpz_inplace_abs(fmpz_t f)
+{
+    if (!COEFF_IS_MPZ(*f))
+        *f = FLINT_ABS(*f);
+    else
+    {
+        mpz_ptr mf = COEFF_TO_PTR(*f);
+        mf->_mp_size = FLINT_ABS(mf->_mp_size);
+    }
+}
+
+void fmpz_sqr(fmpz_t f, const fmpz_t g);
+
 void fmpz_mul_ui(fmpz_t f, const fmpz_t g, ulong x);
-void fmpz_mul_si(fmpz_t f, const fmpz_t g, slong x);
+FMPZ_INLINE
+void fmpz_mul_si(fmpz_t f, const fmpz_t g, slong x)
+{
+    fmpz_mul_ui(f, g, FLINT_ABS(x));
+    if (x < 0)
+        fmpz_inplace_neg(f);
+}
 void fmpz_mul(fmpz_t f, const fmpz_t g, const fmpz_t h);
 
 FMPZ_INLINE void
@@ -387,7 +440,24 @@ fmpz_mul2_uiui(fmpz_t f, const fmpz_t g, ulong h1, ulong h2)
     }
 }
 
-void fmpz_mul_2exp(fmpz_t f, const fmpz_t g, ulong exp);
+void _fmpz_mul_2exp(fmpz_t f, fmpz g, ulong exp, const ulong * gabsptr);
+FMPZ_INLINE
+void fmpz_mul_2exp(fmpz_t rp, const fmpz_t xp, ulong exp)
+{
+    slong xs = *xp;
+    ulong xsabs;
+
+    xsabs = FLINT_ABS(xs);
+
+    if (FLINT_BITS - flint_clz(xsabs) + exp <= SMALL_FMPZ_BITCOUNT_MAX || xsabs == 0)
+    {
+        _fmpz_demote(rp);
+        *rp = xs << exp;
+        return;
+    }
+    else
+        _fmpz_mul_2exp(rp, xs, exp, &xsabs);
+}
 void fmpz_one_2exp(fmpz_t f, ulong exp);
 
 void fmpz_addmul(fmpz_t f, const fmpz_t g, const fmpz_t h);

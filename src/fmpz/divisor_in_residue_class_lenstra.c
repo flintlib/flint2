@@ -36,7 +36,7 @@ int fmpz_divisor_in_residue_class_lenstra(fmpz_t fac, const fmpz_t n, const fmpz
    fmpz_init(ns2);
 
    /* ns2 = n/s^2 */
-   fmpz_mul(ns2, s, s);
+   fmpz_sqr(ns2, s);
    fmpz_tdiv_q(ns2, n, ns2);
 
    /* initialise */
@@ -96,7 +96,7 @@ int fmpz_divisor_in_residue_class_lenstra(fmpz_t fac, const fmpz_t n, const fmpz
          fmpz_addmul(d, a1, r);
          fmpz_addmul(d, b1, r2);
          fmpz_set(d1, d); /* d1 = s1*s + a1*r + b1*r2 */
-         fmpz_mul(d, d, d);
+         fmpz_sqr(d, d);
          fmpz_mul(q, a1, b1);
          fmpz_mul(q, q, n);
          fmpz_submul_ui(d, q, 4);
@@ -112,7 +112,7 @@ int fmpz_divisor_in_residue_class_lenstra(fmpz_t fac, const fmpz_t n, const fmpz
                fmpz_tdiv_q(fac, s1, b1); /* y*b1 = s1 */
                fmpz_mul(fac, fac, s); /* check if ys + r2 is factor */
                fmpz_add(fac, fac, r2);
-               fmpz_abs(fac, fac);
+               fmpz_inplace_abs(fac);
 
                if (!fmpz_is_zero(fac) && !fmpz_is_one(fac) && !fmpz_equal(fac, n) && fmpz_divisible(n, fac))
                {
@@ -124,7 +124,7 @@ int fmpz_divisor_in_residue_class_lenstra(fmpz_t fac, const fmpz_t n, const fmpz
                fmpz_tdiv_q(fac, s1, a1); /* x*a1 = s1 */
                fmpz_mul(fac, fac, s); /* check if xs + r is factor */
                fmpz_add(fac, fac, r);
-               fmpz_abs(fac, fac);
+               fmpz_inplace_abs(fac);
 
                if (!fmpz_is_zero(fac) && !fmpz_is_one(fac) && !fmpz_equal(fac, n) && fmpz_divisible(n, fac))
                {
@@ -135,7 +135,7 @@ int fmpz_divisor_in_residue_class_lenstra(fmpz_t fac, const fmpz_t n, const fmpz
             {
                /* either d/a1 or d/b1 is a divisor of n */
                fmpz_tdiv_q(fac, d, a1);
-               fmpz_abs(fac, fac);
+               fmpz_inplace_abs(fac);
                if (!fmpz_is_zero(fac) && !fmpz_is_one(fac) && !fmpz_equal(fac, n) && fmpz_divisible(n, fac))
                {
                   res = 1;
@@ -143,7 +143,7 @@ int fmpz_divisor_in_residue_class_lenstra(fmpz_t fac, const fmpz_t n, const fmpz
                }
 
                fmpz_tdiv_q(fac, d, b1);
-               fmpz_abs(fac, fac);
+               fmpz_inplace_abs(fac);
                if (!fmpz_is_zero(fac) && !fmpz_is_one(fac) && !fmpz_equal(fac, n) && fmpz_divisible(n, fac))
                {
                   res = 1;

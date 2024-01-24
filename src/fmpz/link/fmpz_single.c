@@ -26,6 +26,10 @@
 # include <stdatomic.h>
 #endif
 
+__GMP_DECLSPEC extern void * (*__gmp_allocate_func)(size_t);
+
+#define GMP_ALLOCATE_LIMBS(nlimbs) __gmp_allocate_func(sizeof(mp_limb_t) * (nlimbs))
+
 #if FLINT_USES_PTHREAD
 typedef struct
 {
@@ -43,6 +47,7 @@ typedef struct
 
 /* Always free larger mpz's to avoid wasting too much heap space */
 #define FLINT_MPZ_MAX_CACHE_LIMBS 64
+#define MIN_ALLOC_LIMBS 3
 
 #define PAGES_PER_BLOCK 16
 
@@ -117,7 +122,9 @@ __mpz_struct * _fmpz_new_mpz(void)
 
             for (j = skip; j < num; j++)
             {
-                mpz_init2(page_ptr + j, 2*FLINT_BITS);
+                (page_ptr + j)->_mp_d = GMP_ALLOCATE_LIMBS(MIN_ALLOC_LIMBS);
+                (page_ptr + j)->_mp_alloc = MIN_ALLOC_LIMBS;
+                (page_ptr + j)->_mp_size = 0;
 
                 /*
                    Cannot be lifted from loop due to possibility of
@@ -168,7 +175,7 @@ void _fmpz_clear_mpz(fmpz f)
     } else
     {
         if (ptr->_mp_alloc > FLINT_MPZ_MAX_CACHE_LIMBS)
-            mpz_realloc2(ptr, 2*FLINT_BITS);
+            _mpz_realloc(ptr, MIN_ALLOC_LIMBS);
 
         if (mpz_free_num == mpz_free_alloc)
         {
@@ -213,18 +220,6 @@ void _fmpz_cleanup(void)
     _fmpz_cleanup_mpz_content();
     flint_free(mpz_free_arr);
     mpz_free_arr = NULL;
-}
-
-__mpz_struct * _fmpz_promote(fmpz_t f)
-{
-    if (!COEFF_IS_MPZ(*f)) /* f is small so promote it first */
-    {
-        __mpz_struct * mf = _fmpz_new_mpz();
-        (*f) = PTR_TO_COEFF(mf);
-        return mf;
-    }
-    else /* f is large already, just return the pointer */
-        return COEFF_TO_PTR(*f);
 }
 
 __mpz_struct * _fmpz_promote_val(fmpz_t f)

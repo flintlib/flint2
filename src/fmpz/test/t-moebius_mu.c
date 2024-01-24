@@ -56,10 +56,10 @@ TEST_FUNCTION_START(fmpz_moebius_mu, state)
         }
 
         check(x, fmpz_moebius_mu(x), (k % 2 ? -1 : 1));
-        fmpz_neg(x, x);
+        fmpz_inplace_neg(x);
 
         check(x, fmpz_moebius_mu(x), (k % 2 ? -1 : 1));
-        fmpz_abs(x, x);
+        fmpz_inplace_abs(x);
 
         /* No longer square-free */
         p = n_nth_prime(n_randtest(state) % 100 + 1);

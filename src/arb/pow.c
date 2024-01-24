@@ -33,7 +33,7 @@ _arb_pow_exp(arb_t z, const arb_t x, sign_type negx, const arb_t y, slong prec)
     arb_exp(z, t, prec);
 
     if (negx == NEGATIVE_ODD)
-        arb_neg(z, z);
+        arb_inplace_neg(z);
 
     arb_clear(t);
 }
@@ -87,7 +87,7 @@ arb_pow(arb_t z, const arb_t x, const arb_t y, slong prec)
                 }
                 else
                 {
-                    fmpz_neg(e, e);
+                    fmpz_inplace_neg(e);
                     arb_rsqrt(z, x, prec + fmpz_bits(e));
                     arb_pow_fmpz_binexp(z, z, e, prec);
                 }

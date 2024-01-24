@@ -45,15 +45,15 @@ TEST_FUNCTION_START(fmpz_poly_bound_roots, state)
             fmpz_randtest(p, state, 1 + n_randint(state, 200));
             fmpz_randtest_not_zero(q, state, 1 + n_randint(state, 200));
 
-            fmpz_abs(p, p);
-            fmpz_abs(q, q);
+            fmpz_inplace_abs(p);
+            fmpz_inplace_abs(q);
 
             fmpz_cdiv_q(t, p, q);
             if (fmpz_cmp(t, bound) > 0)
                 fmpz_set(bound, t);
 
             if (n_randint(state, 2))
-                fmpz_neg(p, p);
+                fmpz_inplace_neg(p);
 
             fmpz_poly_set_coeff_fmpz(g, 0, p);
             fmpz_poly_set_coeff_fmpz(g, 1, q);

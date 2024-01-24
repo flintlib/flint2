@@ -73,7 +73,7 @@ arb_get_fmpz_mid_rad_10exp(fmpz_t mid, fmpz_t rad, fmpz_t exp, const arb_t x, sl
     arb_const_log10(u, prec);
     arb_div(t, t, u, prec);
     arb_mul_fmpz(t, t, e, prec);
-    arb_neg(t, t);
+    arb_inplace_neg(t);
     arb_add_ui(t, t, n + 5, prec);
     arf_get_fmpz(m, arb_midref(t), ARF_RND_FLOOR);
 
@@ -88,7 +88,7 @@ arb_get_fmpz_mid_rad_10exp(fmpz_t mid, fmpz_t rad, fmpz_t exp, const arb_t x, sl
     }
     else
     {
-        fmpz_neg(m, m);
+        fmpz_inplace_neg(m);
         _arb_10_pow_fmpz(t, m, prec);
         arb_div(t, x, t, prec);
     }

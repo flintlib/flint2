@@ -31,7 +31,7 @@ void acb_modular_transform(acb_t w, const psl2z_t g, const acb_t z, slong prec)
         /* b/(cz+d), where -bc = 1, c = 1 => -1/(z+d) */
         acb_add_fmpz(w, z, d, prec);
         acb_inv(w, w, prec);
-        acb_neg(w, w);
+        acb_inplace_neg(w);
     }
     else if (0)
     {
@@ -79,12 +79,12 @@ void acb_modular_transform(acb_t w, const psl2z_t g, const acb_t z, slong prec)
         fmpz_mul(t, a, c);
         arb_addmul_fmpz(re, im, t, prec);
 
-        fmpz_mul(t, d, d);
+        fmpz_sqr(t, d);
         arb_set_fmpz(den, t);
         fmpz_mul(t, c, d);
         fmpz_mul_2exp(t, t, 1);
         arb_addmul_fmpz(den, x, t, prec);
-        fmpz_mul(t, c, c);
+        fmpz_sqr(t, c);
         arb_addmul_fmpz(den, im, t, prec);
 
         fmpz_mul(t, a, d);
