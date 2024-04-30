@@ -127,6 +127,11 @@ static void _find_nonresidue(fmpz *rop,
     The value of \code{(rop,d)}$ is undefined when the return value
     is zero.
  */
+#if defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#endif
+/* Used in test/t-sqrt.c */
 int
 _artin_schreier_preimage(fmpz *rop, const fmpz *op, slong len,
                          const fmpz *a, const slong *j, slong lena)
@@ -234,6 +239,9 @@ _artin_schreier_preimage(fmpz *rop, const fmpz *op, slong len,
 
     return ans;
 }
+#if defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 /*
     Returns whether the non-zero element \code{(op, len)} is a square,
@@ -794,7 +802,7 @@ _qadic_sqrt_2(fmpz *rop, const fmpz *op, slong len,
 
     Assumes that \code{(op, len)} has valuation $0$.
  */
-int _qadic_sqrt(fmpz *rop, const fmpz *op, slong len,
+static int _qadic_sqrt(fmpz *rop, const fmpz *op, slong len,
                 const fmpz *a, const slong *j, slong lena,
                 const fmpz_t p, slong N)
 {

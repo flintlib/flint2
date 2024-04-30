@@ -105,6 +105,11 @@ dpe_mul(dpe_t x, dpe_t y)
     return res;
 }
 
+#if defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#endif
+/* Used in CLD_bound.c */
 double _fmpz_poly_evaluate_horner_d_2exp2_precomp(slong * exp, const double * poly, const slong * poly_exp, slong n, double d, slong dexp)
 {
     dpe_t s, t, x;
@@ -142,6 +147,9 @@ double _fmpz_poly_evaluate_horner_d_2exp2_precomp(slong * exp, const double * po
     *exp = s.e;
     return s.m;
 }
+#if defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
 
 double _fmpz_poly_evaluate_horner_d_2exp2(slong * exp, const fmpz * poly, slong n, double d, slong dexp)
 {

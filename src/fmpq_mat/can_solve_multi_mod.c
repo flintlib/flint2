@@ -17,7 +17,12 @@
 #include "fmpz_mat.h"
 #include "fmpq_mat.h"
 
-static int
+#if defined(__GNUC__)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wmissing-prototypes"
+#endif
+
+int
 _fmpq_mat_check_solution_fmpz_mat(const fmpq_mat_t X, const fmpz_mat_t A, const fmpz_mat_t B)
 {
     slong i, j;
@@ -55,6 +60,10 @@ _fmpq_mat_check_solution_fmpz_mat(const fmpq_mat_t X, const fmpz_mat_t A, const 
     return ok;
 }
 
+#if defined(__GNUC__)
+# pragma GCC diagnostic pop
+#endif
+
 static int
 _permpiv_cmp(slong * perm, slong * prm, slong * pivots, slong * piv, slong n)
 {
@@ -84,7 +93,7 @@ _permpiv_copy(slong * perm, slong * prm, slong * pivots, slong * piv, slong n)
     }
 }
 
-int
+static int
 _fmpq_mat_can_solve_multi_mod(fmpq_mat_t X,
                          const fmpz_mat_t A, const fmpz_mat_t B, const fmpz_t D)
 {
