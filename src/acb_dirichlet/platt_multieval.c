@@ -11,6 +11,7 @@
 
 #include "fmpz_vec.h"
 #include "acb_dirichlet.h"
+#include "acb_dirichlet-impl.h"
 #include "arb_hypgeom.h"
 #include "acb_dft.h"
 

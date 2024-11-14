@@ -9,15 +9,12 @@
     (at your option) any later version.  See <https://www.gnu.org/licenses/>.
 */
 
+#include "arb-impl.h"
 #include "acb.h"
-#include "acb_hypgeom.h"
 #include "arb_hypgeom.h"
-
-void
-acb_hypgeom_gamma_stirling_choose_param(int * reflect, slong * r, slong * n,
-    const acb_t z, int use_reflect, int digamma, slong prec);
-
-void acb_gamma_stirling_bound(mag_ptr err, const acb_t x, slong k0, slong knum, slong n);
+#include "arb_hypgeom-impl.h"
+#include "acb_hypgeom.h"
+#include "acb_hypgeom-impl.h"
 
 void
 acb_hypgeom_gamma_stirling_inner(acb_t s, const acb_t z, slong N, slong prec)

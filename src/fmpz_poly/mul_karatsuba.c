@@ -13,6 +13,7 @@
 #include "fmpz.h"
 #include "fmpz_vec.h"
 #include "fmpz_poly.h"
+#include "fmpz_poly-impl.h"
 
 /*
    Implements karatsuba multiplication. There is no basecase crossover, so

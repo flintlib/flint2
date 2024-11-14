@@ -10,6 +10,7 @@
 */
 
 #include "acb.h"
+#include "acb-impl.h"
 #include "acb_poly.h"
 #include "acb_dirichlet.h"
 

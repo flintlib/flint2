@@ -13,10 +13,7 @@
 #include "ulong_extras.h"
 #include "long_extras.h"
 #include "qadic.h"
-
-int
-_artin_schreier_preimage(fmpz *rop, const fmpz *op, slong len,
-                         const fmpz *a, const slong *j, slong lena);
+#include "qadic-impl.h"
 
 TEST_FUNCTION_START(qadic_sqrt, state)
 {
@@ -207,16 +204,16 @@ TEST_FUNCTION_START(qadic_sqrt, state)
     for (i = 0; i < 200 * flint_test_multiplier(); i++)
     {
         fmpz_t p = {WORD(2)};
-        slong d, N;
+        slong dx, N;
         qadic_ctx_t ctx;
 
         int ans, ans2;
         qadic_t a, b, b2;
 
-        d = n_randint(state, 10) + 1;
+        dx = n_randint(state, 10) + 1;
         N = 1;
 
-        qadic_ctx_init_conway(ctx, p, d, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
+        qadic_ctx_init_conway(ctx, p, dx, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
 
         qadic_init2(a, N);
         qadic_init2(b, N);
@@ -371,17 +368,17 @@ TEST_FUNCTION_START(qadic_sqrt, state)
     for (i = 0; i < 200 * flint_test_multiplier(); i++)
     {
         fmpz_t p = {WORD(2)};
-        slong d, N, N2;
+        slong dx, N, N2;
         qadic_ctx_t ctx;
 
         int ans, ans2;
         qadic_t a, b, b2;
 
-        d = n_randint(state, 10) + 1;
+        dx = n_randint(state, 10) + 1;
         N = z_randint(state, 50) + 1;
         N2 = N - n_randint(state, 10);
 
-        qadic_ctx_init_conway(ctx, p, d, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
+        qadic_ctx_init_conway(ctx, p, dx, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
 
         qadic_init2(a, N);
         qadic_init2(b, N);
@@ -578,7 +575,7 @@ TEST_FUNCTION_START(qadic_sqrt, state)
     for (i = 0; i < 200 * flint_test_multiplier(); i++)
     {
         fmpz_t p;
-        slong d, N, q;
+        slong dx, N, q;
         qadic_ctx_t ctx;
 
         int ans, ans2;
@@ -588,10 +585,10 @@ TEST_FUNCTION_START(qadic_sqrt, state)
         while (q == 2)
             q = n_randprime(state, 2 + n_randint(state, 3), 1);
         fmpz_init_set_ui(p, q);
-        d = n_randint(state, 10) + 1;
+        dx = n_randint(state, 10) + 1;
         N = 1;
 
-        qadic_ctx_init_conway(ctx, p, d, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
+        qadic_ctx_init_conway(ctx, p, dx, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
 
         qadic_init2(a, N);
         qadic_init2(b, N);
@@ -738,7 +735,7 @@ TEST_FUNCTION_START(qadic_sqrt, state)
     for (i = 0; i < 200 * flint_test_multiplier(); i++)
     {
         fmpz_t p;
-        slong d, N, N2, q;
+        slong dx, N, N2, q;
         qadic_ctx_t ctx;
 
         int ans, ans2;
@@ -748,11 +745,11 @@ TEST_FUNCTION_START(qadic_sqrt, state)
         while (q == 2)
             q = n_randprime(state, 2 + n_randint(state, 3), 1);
         fmpz_init_set_ui(p, q);
-        d = n_randint(state, 10) + 1;
+        dx = n_randint(state, 10) + 1;
         N = z_randint(state, 50) + 1;
         N2 = N - n_randint(state, 10);
 
-        qadic_ctx_init_conway(ctx, p, d, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
+        qadic_ctx_init_conway(ctx, p, dx, FLINT_MAX(0,N-10), FLINT_MAX(0,N+10), "X", PADIC_SERIES);
 
         qadic_init2(a, N);
         qadic_init2(b, N);

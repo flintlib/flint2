@@ -11,6 +11,7 @@
 
 #include "ulong_extras.h"
 #include "qqbar.h"
+#include "qqbar-impl.h"
 
 #ifdef __GNUC__
 # define fabs __builtin_fabs

@@ -10,6 +10,7 @@
 */
 
 #include "arb.h"
+#include "arb-impl.h"
 
 /* Use series expansion of the elliptic integral
    pi/(4K(z^2)) = 1/2 - z^2/8 - 5z^4/128 - 11z^6/512 - 469z^8/32768 + O(z^10)
@@ -93,7 +94,7 @@ mag_agm(mag_t res, const mag_t x, const mag_t y)
     }
 }
 
-void
+static void
 mag_agm_lower(mag_t res, const mag_t x, const mag_t y)
 {
     if (mag_is_zero(x) || mag_is_zero(y))

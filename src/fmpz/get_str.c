@@ -13,6 +13,7 @@
 #include <string.h>
 #include "gmpcompat.h"
 #include "fmpz.h"
+#include "fmpz-impl.h"
 #include "fmpz_vec.h"
 #include "thread_pool.h"
 #include "thread_support.h"

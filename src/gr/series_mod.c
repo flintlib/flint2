@@ -40,7 +40,7 @@ static int _gr_gr_series_mod_ctx_write(gr_stream_t out, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-truth_t
+static truth_t
 _gr_gr_series_mod_ctx_is_ring(gr_ctx_t ctx)
 {
     if (SERIES_MOD_N(ctx) == 0)
@@ -49,7 +49,7 @@ _gr_gr_series_mod_ctx_is_ring(gr_ctx_t ctx)
     return gr_ctx_is_ring(SERIES_MOD_ELEM_CTX(ctx));
 }
 
-truth_t
+static truth_t
 _gr_gr_series_mod_ctx_is_commutative_ring(gr_ctx_t ctx)
 {
     if (SERIES_MOD_N(ctx) == 0)
@@ -58,7 +58,7 @@ _gr_gr_series_mod_ctx_is_commutative_ring(gr_ctx_t ctx)
     return gr_ctx_is_commutative_ring(SERIES_MOD_ELEM_CTX(ctx));
 }
 
-truth_t
+static truth_t
 _gr_gr_series_mod_ctx_is_integral_domain(gr_ctx_t ctx)
 {
     if (SERIES_MOD_N(ctx) != 1)
@@ -67,7 +67,7 @@ _gr_gr_series_mod_ctx_is_integral_domain(gr_ctx_t ctx)
     return gr_ctx_is_integral_domain(SERIES_MOD_ELEM_CTX(ctx));
 }
 
-truth_t
+static truth_t
 _gr_gr_series_mod_ctx_is_field(gr_ctx_t ctx)
 {
     if (SERIES_MOD_N(ctx) != 1)
@@ -76,7 +76,7 @@ _gr_gr_series_mod_ctx_is_field(gr_ctx_t ctx)
     return gr_ctx_is_field(SERIES_MOD_ELEM_CTX(ctx));
 }
 
-int _gr_gr_series_mod_ctx_set_gen_name(gr_ctx_t ctx, const char * s)
+static int _gr_gr_series_mod_ctx_set_gen_name(gr_ctx_t ctx, const char * s)
 {
     slong len;
     len = strlen(s);
@@ -89,7 +89,7 @@ int _gr_gr_series_mod_ctx_set_gen_name(gr_ctx_t ctx, const char * s)
     return GR_SUCCESS;
 }
 
-int _gr_gr_series_mod_ctx_set_gen_names(gr_ctx_t ctx, const char ** s)
+static int _gr_gr_series_mod_ctx_set_gen_names(gr_ctx_t ctx, const char ** s)
 {
     return _gr_gr_series_mod_ctx_set_gen_name(ctx, s[0]);
 }
@@ -173,7 +173,7 @@ static int _gr_gr_series_mod_set(gr_poly_t res, const gr_poly_t x, gr_ctx_t ctx)
     return gr_poly_set(res, x, SERIES_MOD_ELEM_CTX(ctx));
 }
 
-static void _gr_gr_series_mod_set_shallow(gr_poly_t res, const gr_poly_t x, gr_ctx_t ctx)
+static void _gr_gr_series_mod_set_shallow(gr_poly_t res, const gr_poly_t x, gr_ctx_t FLINT_UNUSED(ctx))
 {
     *res = *x;
 }
@@ -244,7 +244,7 @@ static int _gr_gr_series_mod_div(gr_poly_t res, const gr_poly_t x, const gr_poly
 }
 
 #define UNARY_POLY_WRAPPER(func) \
-int \
+static int \
 _gr_gr_series_mod_ ## func(gr_poly_t res, const gr_poly_t x, gr_ctx_t ctx) \
 { \
     return gr_poly_ ## func ## _series(res, x, SERIES_MOD_N(ctx), SERIES_MOD_ELEM_CTX(ctx)); \

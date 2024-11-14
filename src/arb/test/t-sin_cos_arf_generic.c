@@ -11,11 +11,7 @@
 
 #include "test_helpers.h"
 #include "arb.h"
-
-/* these functions are not exposed to the public for now,
-   but it still makes sense to test them explicitly */
-void arb_sin_cos_arf_rs_generic(arb_t res_sin, arb_t res_cos, const arf_t x, slong prec);
-void arb_sin_cos_taylor_sum_rs(arb_t s, const arb_t x, slong N, int cosine, slong prec);
+#include "arb-impl.h"
 
 TEST_FUNCTION_START(arb_sin_cos_arf_generic, state)
 {

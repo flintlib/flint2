@@ -10,6 +10,7 @@
 */
 
 #include "acb_poly.h"
+#include "acb_poly-impl.h"
 #include "gr_poly.h"
 
 #ifdef __GNUC__

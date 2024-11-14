@@ -1310,10 +1310,6 @@ GR_INLINE void gr_heap_clear_vec(gr_ptr x, slong len, gr_ctx_t ctx)
     flint_free(x);
 }
 
-truth_t gr_generic_ctx_predicate(gr_ctx_t ctx);
-truth_t gr_generic_ctx_predicate_true(gr_ctx_t ctx);
-truth_t gr_generic_ctx_predicate_false(gr_ctx_t ctx);
-
 /* Some base rings */
 
 void gr_ctx_init_random(gr_ctx_t ctx, flint_rand_t state);
@@ -1331,7 +1327,9 @@ void _gr_ctx_init_nmod(gr_ctx_t ctx, void * nmod_t_ref);
 void gr_ctx_init_nmod8(gr_ctx_t ctx, unsigned char n);
 void gr_ctx_init_nmod32(gr_ctx_t ctx, unsigned int n);
 
+#ifndef MPN_MOD_H
 int gr_ctx_init_mpn_mod(gr_ctx_t ctx, const fmpz_t n);
+#endif
 
 void gr_ctx_init_real_qqbar(gr_ctx_t ctx);
 void gr_ctx_init_complex_qqbar(gr_ctx_t ctx);
@@ -1393,12 +1391,9 @@ void gr_ctx_init_gr_poly(gr_ctx_t ctx, gr_ctx_t base_ring);
 
 /* Multivariate */
 
-#ifdef MPOLY_H
-void gr_ctx_init_fmpz_mpoly(gr_ctx_t ctx, slong nvars, const ordering_t ord);
+#ifdef MPOLY_TYPES_H
 void gr_ctx_init_gr_mpoly(gr_ctx_t ctx, gr_ctx_t base_ring, slong nvars, const ordering_t ord);
-#endif
-
-#ifdef FMPZ_MPOLY_Q_H
+void gr_ctx_init_fmpz_mpoly(gr_ctx_t ctx, slong nvars, const ordering_t ord);
 void gr_ctx_init_fmpz_mpoly_q(gr_ctx_t ctx, slong nvars, const ordering_t ord);
 #endif
 

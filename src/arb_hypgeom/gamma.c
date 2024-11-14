@@ -10,12 +10,14 @@
 */
 
 #include "fmpq.h"
+#include "arb-impl.h"
 #include "acb.h"
 #include "arb_hypgeom.h"
+#include "arb_hypgeom-impl.h"
 #include "bernoulli.h"
 
 /* tuning factor */
-double GAMMA_STIRLING_BETA = 0.0;
+static double GAMMA_STIRLING_BETA = 0.0;
 
 #define PI 3.1415926535897932385
 
@@ -207,8 +209,6 @@ arb_hypgeom_gamma_stirling_choose_param(int * reflect, slong * r, slong * n,
             arf_get_d(a, ARF_RND_UP), 0.0, use_reflect, digamma, prec);
     }
 }
-
-void arb_gamma_stirling_bound(mag_ptr err, const arb_t x, slong k0, slong knum, slong n);
 
 void
 arb_hypgeom_gamma_stirling_inner(arb_t s, const arb_t z, slong N, slong prec)

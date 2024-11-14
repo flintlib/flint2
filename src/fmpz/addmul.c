@@ -14,6 +14,7 @@
 #include "gmpcompat.h"
 #include "mpn_extras.h"
 #include "fmpz.h"
+#include "fmpz-impl.h"
 
 /* Will not get called with x or y small. */
 void
@@ -35,12 +36,9 @@ _flint_mpz_addmul_large(mpz_ptr z, mpz_srcptr x, mpz_srcptr y, int negate)
 
     if (xn < yn)
     {
-        mpz_srcptr t;
-        slong tn;
-
-        t = x; x = y; y = t;
-        tn = xn; xn = yn; yn = tn;
-        tn = x_sgn; x_sgn = y_sgn; y_sgn = tn;
+        FLINT_SWAP(mpz_srcptr, x, y);
+        FLINT_SWAP(slong, xn, yn);
+        FLINT_SWAP(slong, x_sgn, y_sgn);
     }
 
     if (negate)

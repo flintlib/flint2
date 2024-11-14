@@ -11,6 +11,7 @@
 
 #include "acb.h"
 #include "acb_dirichlet.h"
+#include "acb_dirichlet-impl.h"
 
 void
 acb_dirichlet_vec_mellin_arb(acb_ptr res, const dirichlet_group_t G, const dirichlet_char_t chi, slong len, const arb_t t, slong n, slong prec)

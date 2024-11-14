@@ -13,6 +13,7 @@
 #include "nmod.h"
 #include "nmod_vec.h"
 #include "nmod_poly.h"
+#include "nmod_poly-impl.h"
 #include "nmod_mat.h"
 #include "gr.h"
 #include "gr_vec.h"
@@ -35,8 +36,7 @@ _gr_nmod_ctx_struct;
 /* when used as finite field when defining polynomial x - a, allow storing the coefficient a */
 #define NMOD_CTX_A(ring_ctx) (&((((_gr_nmod_ctx_struct *)(ring_ctx))->a)))
 
-
-void
+static void
 _gr_nmod_ctx_write(gr_stream_t out, gr_ctx_t ctx)
 {
     gr_stream_write(out, "Integers mod ");
@@ -44,7 +44,7 @@ _gr_nmod_ctx_write(gr_stream_t out, gr_ctx_t ctx)
     gr_stream_write(out, " (_gr_nmod)");
 }
 
-truth_t
+static truth_t
 _gr_nmod_ctx_is_field(const gr_ctx_t ctx)
 {
     if (NMOD_IS_PRIME(ctx) != T_UNKNOWN)
@@ -53,26 +53,26 @@ _gr_nmod_ctx_is_field(const gr_ctx_t ctx)
     return n_is_prime(NMOD_CTX(ctx).n) ? T_TRUE : T_FALSE;
 }
 
-int
+static int
 _gr_nmod_ctx_set_is_field(gr_ctx_t ctx, truth_t is_field)
 {
     NMOD_IS_PRIME(ctx) = is_field;
     return GR_SUCCESS;
 }
 
-void
-_gr_nmod_init(ulong * x, const gr_ctx_t ctx)
+static void
+_gr_nmod_init(ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     x[0] = 0;
 }
 
-void
-_gr_nmod_clear(ulong * x, const gr_ctx_t ctx)
+static void
+_gr_nmod_clear(ulong * FLINT_UNUSED(x), const gr_ctx_t FLINT_UNUSED(ctx))
 {
 }
 
-void
-_gr_nmod_swap(ulong * x, ulong * y, const gr_ctx_t ctx)
+static void
+_gr_nmod_swap(ulong * x, ulong * y, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     ulong t;
     t = *x;
@@ -80,55 +80,55 @@ _gr_nmod_swap(ulong * x, ulong * y, const gr_ctx_t ctx)
     *y = t;
 }
 
-void
-_gr_nmod_set_shallow(ulong * res, const ulong * x, const gr_ctx_t ctx)
+static void
+_gr_nmod_set_shallow(ulong * res, const ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     *res = *x;
 }
 
-int
+static int
 _gr_nmod_randtest(ulong * res, flint_rand_t state, const gr_ctx_t ctx)
 {
     res[0] = n_randtest(state) % NMOD_CTX(ctx).n;
     return GR_SUCCESS;
 }
 
-int
-_gr_nmod_write(gr_stream_t out, const ulong * x, const gr_ctx_t ctx)
+static int
+_gr_nmod_write(gr_stream_t out, const ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     gr_stream_write_ui(out, x[0]);
     return GR_SUCCESS;
 }
 
-int
-_gr_nmod_zero(ulong * x, const gr_ctx_t ctx)
+static int
+_gr_nmod_zero(ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     x[0] = 0;
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_one(ulong * x, const gr_ctx_t ctx)
 {
     x[0] = (NMOD_CTX(ctx).n != 1);
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_set_si(ulong * res, slong v, const gr_ctx_t ctx)
 {
     res[0] = nmod_set_si(v, NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_set_ui(ulong * res, ulong v, const gr_ctx_t ctx)
 {
     res[0] = nmod_set_ui(v, NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_set_fmpz(ulong * res, const fmpz_t v, const gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -136,15 +136,15 @@ _gr_nmod_set_fmpz(ulong * res, const fmpz_t v, const gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
-_gr_nmod_get_fmpz(fmpz_t res, const ulong * x, const gr_ctx_t ctx)
+static int
+_gr_nmod_get_fmpz(fmpz_t res, const ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     fmpz_set_ui(res, x[0]);
     return GR_SUCCESS;
 }
 
 
-int
+static int
 _gr_nmod_inv(ulong * res, const ulong * x, const gr_ctx_t ctx)
 {
     ulong r, g;
@@ -182,7 +182,7 @@ fmpz_mod_ctx_extended_struct;
 
 #define FMPZ_MOD_CTX(ring_ctx) (&(((fmpz_mod_ctx_extended_struct *)(GR_CTX_DATA_AS_PTR(ring_ctx)))->ctx))
 
-int
+static int
 _gr_nmod_set_other(ulong * res, gr_ptr v, gr_ctx_t v_ctx, const gr_ctx_t ctx)
 {
     if (v_ctx->which_ring == GR_CTX_NMOD)
@@ -236,94 +236,94 @@ _gr_nmod_set_other(ulong * res, gr_ptr v, gr_ctx_t v_ctx, const gr_ctx_t ctx)
     return GR_UNABLE;
 }
 
-truth_t
-_gr_nmod_is_zero(const ulong * x, const gr_ctx_t ctx)
+static truth_t
+_gr_nmod_is_zero(const ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     return (x[0] == 0) ? T_TRUE : T_FALSE;
 }
 
-truth_t
+static truth_t
 _gr_nmod_is_one(const ulong * x, const gr_ctx_t ctx)
 {
     return (x[0] == (NMOD_CTX(ctx).n != 1)) ? T_TRUE : T_FALSE;
 }
 
-truth_t
+static truth_t
 _gr_nmod_is_neg_one(const ulong * x, const gr_ctx_t ctx)
 {
     return (x[0] == NMOD_CTX(ctx).n - 1) ? T_TRUE : T_FALSE;
 }
 
-truth_t
-_gr_nmod_equal(const ulong * x, const ulong * y, const gr_ctx_t ctx)
+static truth_t
+_gr_nmod_equal(const ulong * x, const ulong * y, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     return (x[0] == y[0]) ? T_TRUE : T_FALSE;
 }
 
-int
-_gr_nmod_set(ulong * res, const ulong * x, const gr_ctx_t ctx)
+static int
+_gr_nmod_set(ulong * res, const ulong * x, const gr_ctx_t FLINT_UNUSED(ctx))
 {
     res[0] = x[0];
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_neg(ulong * res, const ulong * x, const gr_ctx_t ctx)
 {
     res[0] = nmod_neg(x[0], NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_add(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     res[0] = nmod_add(x[0], y[0], NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_add_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
 {
     res[0] = nmod_add(x[0], nmod_set_ui(y, NMOD_CTX(ctx)), NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_add_si(ulong * res, const ulong * x, slong y, const gr_ctx_t ctx)
 {
     res[0] = nmod_add(x[0], nmod_set_si(y, NMOD_CTX(ctx)), NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_sub(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     res[0] = nmod_sub(x[0], y[0], NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_sub_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
 {
     res[0] = nmod_sub(x[0], nmod_set_ui(y, NMOD_CTX(ctx)), NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_sub_si(ulong * res, const ulong * x, slong y, const gr_ctx_t ctx)
 {
     res[0] = nmod_sub(x[0], nmod_set_si(y, NMOD_CTX(ctx)), NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_mul(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     res[0] = nmod_mul(x[0], y[0], NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_mul_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
 {
 /*
@@ -333,7 +333,7 @@ _gr_nmod_mul_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_mul_si(ulong * res, const ulong * x, slong y, const gr_ctx_t ctx)
 {
 /*
@@ -347,7 +347,7 @@ _gr_nmod_mul_si(ulong * res, const ulong * x, slong y, const gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_mul_fmpz(ulong * res, const ulong * x, const fmpz_t y, const gr_ctx_t ctx)
 {
     if (!COEFF_IS_MPZ(*y))
@@ -365,7 +365,7 @@ _gr_nmod_mul_fmpz(ulong * res, const ulong * x, const fmpz_t y, const gr_ctx_t c
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_addmul(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     ulong r = res[0];
@@ -374,7 +374,7 @@ _gr_nmod_addmul(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ct
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_submul(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     ulong r = res[0];
@@ -384,19 +384,19 @@ _gr_nmod_submul(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ct
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_mul_two(ulong * res, const ulong * x, const gr_ctx_t ctx)
 {
     return _gr_nmod_add(res, x, x, ctx);
 }
 
-int
+static int
 _gr_nmod_sqr(ulong * res, const ulong * x, const gr_ctx_t ctx)
 {
     return _gr_nmod_mul(res, x, x, ctx);
 }
 
-int
+static int
 _gr_nmod_div(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     ulong t;
@@ -410,7 +410,7 @@ _gr_nmod_div(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
     return status;
 }
 
-int
+static int
 _gr_nmod_div_si(ulong * res, const ulong * x, slong y, const gr_ctx_t ctx)
 {
     ulong c = nmod_set_si(y, NMOD_CTX(ctx));
@@ -418,7 +418,7 @@ _gr_nmod_div_si(ulong * res, const ulong * x, slong y, const gr_ctx_t ctx)
     return _gr_nmod_div(res, x, &c, ctx);
 }
 
-int
+static int
 _gr_nmod_div_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
 {
     ulong c = nmod_set_ui(y, NMOD_CTX(ctx));
@@ -426,7 +426,7 @@ _gr_nmod_div_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
     return _gr_nmod_div(res, x, &c, ctx);
 }
 
-int
+static int
 _gr_nmod_div_fmpz(ulong * res, const ulong * x, const fmpz_t y, const gr_ctx_t ctx)
 {
     ulong c = fmpz_get_nmod(y, NMOD_CTX(ctx));
@@ -434,7 +434,7 @@ _gr_nmod_div_fmpz(ulong * res, const ulong * x, const fmpz_t y, const gr_ctx_t c
     return _gr_nmod_div(res, x, &c, ctx);
 }
 
-truth_t
+static truth_t
 _gr_nmod_is_invertible(const ulong * x, const gr_ctx_t ctx)
 {
     ulong r, g;
@@ -442,14 +442,14 @@ _gr_nmod_is_invertible(const ulong * x, const gr_ctx_t ctx)
     return (g == 1) ? T_TRUE : T_FALSE;
 }
 
-truth_t
+static truth_t
 _gr_nmod_divides(const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     ulong t;
     return nmod_divides(&t, y[0], x[0], NMOD_CTX(ctx)) ? T_TRUE : T_FALSE;
 }
 
-int
+static int
 _gr_nmod_div_nonunique(ulong * res, const ulong * x, const ulong * y, const gr_ctx_t ctx)
 {
     ulong t;
@@ -469,7 +469,7 @@ _gr_nmod_div_nonunique(ulong * res, const ulong * x, const ulong * y, const gr_c
     return status;
 }
 
-int
+static int
 _gr_nmod_mul_2exp_si(ulong * res, ulong * x, slong y, const gr_ctx_t ctx)
 {
     ulong c, m = NMOD_CTX(ctx).n;
@@ -511,7 +511,7 @@ _gr_nmod_mul_2exp_si(ulong * res, ulong * x, slong y, const gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_sqrt(ulong * res, const ulong * x, gr_ctx_t ctx)
 {
     if (x[0] <= 1)
@@ -532,7 +532,7 @@ _gr_nmod_sqrt(ulong * res, const ulong * x, gr_ctx_t ctx)
         return GR_SUCCESS;
 }
 
-truth_t
+static truth_t
 _gr_nmod_is_square(const ulong * x, gr_ctx_t ctx)
 {
     ulong y;
@@ -552,14 +552,14 @@ _gr_nmod_is_square(const ulong * x, gr_ctx_t ctx)
         return T_TRUE;
 }
 
-int
+static int
 _gr_nmod_pow_ui(ulong * res, const ulong * x, ulong y, const gr_ctx_t ctx)
 {
     res[0] = nmod_pow_ui(x[0], y, NMOD_CTX(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_pow_fmpz(ulong * res, const ulong * x, const fmpz_t y, gr_ctx_t ctx)
 {
     if (fmpz_sgn(y) < 0)
@@ -574,8 +574,8 @@ _gr_nmod_pow_fmpz(ulong * res, const ulong * x, const fmpz_t y, gr_ctx_t ctx)
 }
 
 
-void
-_gr_nmod_vec_init(ulong * res, slong len, gr_ctx_t ctx)
+static void
+_gr_nmod_vec_init(ulong * res, slong len, gr_ctx_t FLINT_UNUSED(ctx))
 {
     slong i;
 
@@ -583,13 +583,13 @@ _gr_nmod_vec_init(ulong * res, slong len, gr_ctx_t ctx)
         res[i] = 0;
 }
 
-void
-_gr_nmod_vec_clear(ulong * res, slong len, gr_ctx_t ctx)
+static void
+_gr_nmod_vec_clear(ulong * FLINT_UNUSED(res), slong FLINT_UNUSED(len), gr_ctx_t FLINT_UNUSED(ctx))
 {
 }
 
-int
-_gr_nmod_vec_set(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
+static int
+_gr_nmod_vec_set(ulong * res, const ulong * vec, slong len, gr_ctx_t FLINT_UNUSED(ctx))
 {
     slong i;
 
@@ -599,8 +599,8 @@ _gr_nmod_vec_set(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
-_gr_nmod_vec_normalise(slong * res, const ulong * vec, slong len, gr_ctx_t ctx)
+static int
+_gr_nmod_vec_normalise(slong * res, const ulong * vec, slong len, gr_ctx_t FLINT_UNUSED(ctx))
 {
     while (len > 0 && vec[len - 1] == 0)
         len--;
@@ -609,8 +609,8 @@ _gr_nmod_vec_normalise(slong * res, const ulong * vec, slong len, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-slong
-_gr_nmod_vec_normalise_weak(const ulong * vec, slong len, gr_ctx_t ctx)
+static slong
+_gr_nmod_vec_normalise_weak(const ulong * vec, slong len, gr_ctx_t FLINT_UNUSED(ctx))
 {
     while (len > 0 && vec[len - 1] == 0)
         len--;
@@ -618,7 +618,7 @@ _gr_nmod_vec_normalise_weak(const ulong * vec, slong len, gr_ctx_t ctx)
     return len;
 }
 
-int
+static int
 _gr_nmod_vec_neg(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
 {
     slong i;
@@ -630,7 +630,7 @@ _gr_nmod_vec_neg(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_add(ulong * res, const ulong * vec1, const ulong * vec2, slong len, gr_ctx_t ctx)
 {
     slong i;
@@ -642,7 +642,7 @@ _gr_nmod_vec_add(ulong * res, const ulong * vec1, const ulong * vec2, slong len,
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_sub(ulong * res, const ulong * vec1, const ulong * vec2, slong len, gr_ctx_t ctx)
 {
     slong i;
@@ -684,7 +684,7 @@ static inline void _nmod_vec_scalar_mul_nmod_inline(nn_ptr res, nn_srcptr vec,
         _nmod_vec_scalar_mul_nmod_generic_inline(res, vec, len, c, mod);
 }
 
-int
+static int
 _gr_nmod_vec_mul_scalar(ulong * res, const ulong * vec1, slong len, const ulong * c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -692,7 +692,7 @@ _gr_nmod_vec_mul_scalar(ulong * res, const ulong * vec1, slong len, const ulong 
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_scalar_mul_vec(ulong * res, ulong * c, const ulong * vec1, slong len, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -700,7 +700,7 @@ _gr_nmod_scalar_mul_vec(ulong * res, ulong * c, const ulong * vec1, slong len, g
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_mul_scalar_si(ulong * res, const ulong * vec1, slong len, slong c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -708,7 +708,7 @@ _gr_nmod_vec_mul_scalar_si(ulong * res, const ulong * vec1, slong len, slong c, 
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_mul_scalar_ui(ulong * res, const ulong * vec1, slong len, ulong c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -716,7 +716,7 @@ _gr_nmod_vec_mul_scalar_ui(ulong * res, const ulong * vec1, slong len, ulong c, 
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_mul_scalar_fmpz(ulong * res, const ulong * vec1, slong len, const fmpz_t c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -724,7 +724,7 @@ _gr_nmod_vec_mul_scalar_fmpz(ulong * res, const ulong * vec1, slong len, const f
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_mul_scalar_2exp_si(ulong * res, const ulong * vec1, slong len, slong c, gr_ctx_t ctx)
 {
     ulong t[1];
@@ -739,7 +739,7 @@ _gr_nmod_vec_mul_scalar_2exp_si(ulong * res, const ulong * vec1, slong len, slon
     return status;
 }
 
-int
+static int
 _gr_nmod_vec_addmul_scalar(ulong * res, const ulong * vec1, slong len, const ulong * c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -747,7 +747,7 @@ _gr_nmod_vec_addmul_scalar(ulong * res, const ulong * vec1, slong len, const ulo
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_submul_scalar(ulong * res, const ulong * vec1, slong len, const ulong * c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -755,7 +755,7 @@ _gr_nmod_vec_submul_scalar(ulong * res, const ulong * vec1, slong len, const ulo
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_addmul_scalar_si(ulong * res, const ulong * vec1, slong len, slong c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -763,7 +763,7 @@ _gr_nmod_vec_addmul_scalar_si(ulong * res, const ulong * vec1, slong len, slong 
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_submul_scalar_si(ulong * res, const ulong * vec1, slong len, slong c, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -771,7 +771,7 @@ _gr_nmod_vec_submul_scalar_si(ulong * res, const ulong * vec1, slong len, slong 
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_sum(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
 {
     ulong hi, lo;
@@ -812,7 +812,7 @@ _gr_nmod_vec_sum(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_vec_product(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -853,7 +853,7 @@ _gr_nmod_vec_product(ulong * res, const ulong * vec, slong len, gr_ctx_t ctx)
 }
 
 
-int
+static int
 __gr_nmod_vec_dot(ulong * res, const ulong * initial, int subtract, const ulong * vec1, const ulong * vec2, slong len, gr_ctx_t ctx)
 {
     ulong s;
@@ -891,7 +891,7 @@ __gr_nmod_vec_dot(ulong * res, const ulong * initial, int subtract, const ulong 
     return GR_SUCCESS;
 }
 
-int
+static int
 __gr_nmod_vec_dot_rev(ulong * res, const ulong * initial, int subtract, const ulong * vec1, const ulong * vec2, slong len, gr_ctx_t ctx)
 {
     ulong s;
@@ -930,7 +930,7 @@ __gr_nmod_vec_dot_rev(ulong * res, const ulong * initial, int subtract, const ul
 }
 
 /* todo: better algorithms for large len */
-int
+static int
 _gr_nmod_vec_reciprocals(ulong * res, slong len, gr_ctx_t ctx)
 {
     nmod_t mod = NMOD_CTX(ctx);
@@ -943,7 +943,7 @@ _gr_nmod_vec_reciprocals(ulong * res, slong len, gr_ctx_t ctx)
         return GR_SUCCESS;
     }
 
-    if (mod.n <= len || mod.n % 2 == 0)
+    if (mod.n <= (ulong) len || mod.n % 2 == 0)
         return GR_DOMAIN;
 
     res[0] = 1;
@@ -961,7 +961,7 @@ _gr_nmod_vec_reciprocals(ulong * res, slong len, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_poly_mullow(ulong * res,
     const ulong * poly1, slong len1,
     const ulong * poly2, slong len2, slong n, gr_ctx_t ctx)
@@ -985,7 +985,7 @@ _gr_nmod_poly_mullow(ulong * res,
 }
 
 /* fixme: duplicates _nmod_poly_divrem for error handling */
-int
+static int
 _gr_nmod_poly_divrem(nn_ptr Q, nn_ptr R, nn_srcptr A, slong lenA,
                                   nn_srcptr B, slong lenB, gr_ctx_t ctx)
 {
@@ -1017,7 +1017,7 @@ _gr_nmod_poly_divrem(nn_ptr Q, nn_ptr R, nn_srcptr A, slong lenA,
     }
 }
 
-int
+static int
 _gr_nmod_poly_divexact(nn_ptr Q, nn_srcptr A, slong lenA, nn_srcptr B, slong lenB, gr_ctx_t ctx)
 {
     slong lenQ = lenA - lenB + 1;
@@ -1052,9 +1052,7 @@ static const short inv_series_cutoff_tab[64] = {38, 36, 38, 36, 41, 48, 49, 54, 
 
 #endif
 
-void _nmod_poly_inv_series_basecase_preinv1(nn_ptr Qinv, nn_srcptr Q, slong Qlen, slong n, ulong q, nmod_t mod);
-
-int
+static int
 _gr_nmod_poly_inv_series_basecase(ulong * res,
     const ulong * f, slong flen, slong n, gr_ctx_t ctx)
 {
@@ -1071,7 +1069,7 @@ _gr_nmod_poly_inv_series_basecase(ulong * res,
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_nmod_poly_inv_series(ulong * res,
     const ulong * f, slong flen, slong n, gr_ctx_t ctx)
 {
@@ -1088,9 +1086,7 @@ _gr_nmod_poly_inv_series(ulong * res,
 }
 
 
-void _nmod_poly_div_series_basecase_preinv1(nn_ptr Qinv, nn_srcptr P, slong Plen, nn_srcptr Q, slong Qlen, slong n, ulong q, nmod_t mod);
-
-int
+static int
 _gr_nmod_poly_div_series_basecase(ulong * res,
     const ulong * f, slong flen, const ulong * g, slong glen, slong n, gr_ctx_t ctx)
 {
@@ -1128,7 +1124,7 @@ static const short div_series_cutoff_tab[64] = {
 
 #endif
 
-int
+static int
 _gr_nmod_poly_div_series(ulong * res,
     const ulong * f, slong flen, const ulong * g, slong glen, slong n, gr_ctx_t ctx)
 {
@@ -1166,7 +1162,7 @@ static const short rsqrt_series_cutoff_tab[64] = {6, 22, 22, 24, 27, 28, 28, 58,
 
 #endif
 
-int
+static int
 _gr_nmod_poly_rsqrt_series(ulong * res,
     const ulong * f, slong flen, slong n, gr_ctx_t ctx)
 {
@@ -1205,7 +1201,7 @@ static const short sqrt_series_cutoff_tab[] = { 32767, 632, 732, 928, 1443,
 #endif
 
 /* todo: unbalanced cutoffs */
-int
+static int
 _gr_nmod_poly_sqrt_series(ulong * res,
     const ulong * f, slong flen, slong n, gr_ctx_t ctx)
 {
@@ -1265,7 +1261,7 @@ static const short exp_series_newton_cutoff_tab[64] = {
 
 #endif
 
-int
+static int
 _gr_nmod_poly_exp_series(ulong * res,
     const ulong * f, slong flen, slong n, gr_ctx_t ctx)
 {
@@ -1286,7 +1282,7 @@ _gr_nmod_poly_exp_series(ulong * res,
     return _gr_poly_exp_series_newton(res, NULL, f, flen, n, cutoff2, ctx);
 }
 
-int
+static int
 _gr_nmod_roots_gr_poly(gr_vec_t roots, gr_vec_t mult, const gr_poly_t poly, int flags, gr_ctx_t ctx)
 {
     if (poly->length == 0)
@@ -1328,7 +1324,7 @@ _gr_nmod_roots_gr_poly(gr_vec_t roots, gr_vec_t mult, const gr_poly_t poly, int 
 
 }
 
-int
+static int
 _gr_nmod_mat_mul(gr_mat_t res, const gr_mat_t x, const gr_mat_t y, gr_ctx_t ctx)
 {
     nmod_mat_t R, X, Y;

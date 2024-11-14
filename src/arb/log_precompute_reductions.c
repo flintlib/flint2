@@ -13,6 +13,7 @@
 #include "fmpz_mat.h"
 #include "fmpz_lll.h"
 #include "arb.h"
+#include "arb-impl.h"
 
 #ifdef __GNUC__
 # define fabs __builtin_fabs

@@ -10,6 +10,7 @@
 */
 
 #include "acb_dft.h"
+#include "acb_dft-impl.h"
 
 /* swap each element with one with bit-reversed index */
 void

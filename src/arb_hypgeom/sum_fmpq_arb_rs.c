@@ -13,6 +13,7 @@
 #include "fmpz_vec.h"
 #include "arb.h"
 #include "arb_hypgeom.h"
+#include "arb_hypgeom-impl.h"
 
 #ifdef __GNUC__
 # define ldexp __builtin_ldexp

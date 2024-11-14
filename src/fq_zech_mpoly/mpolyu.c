@@ -10,7 +10,7 @@
 */
 
 #include "fq_zech_mpoly.h"
-
+#include "fq_zech_mpoly-impl.h"
 
 int fq_zech_mpolyu_is_canonical(const fq_zech_mpolyu_t A,
                                                  const fq_zech_mpoly_ctx_t ctx)

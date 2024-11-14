@@ -10,6 +10,7 @@
 */
 
 #include "arb.h"
+#include "arb-impl.h"
 #include "acb_dirichlet.h"
 
 void

@@ -11,6 +11,7 @@
 
 #include "arb.h"
 #include "arb_hypgeom.h"
+#include "arb_hypgeom-impl.h"
 
 int
 _arf_increment_fast(arf_t x, slong prec)

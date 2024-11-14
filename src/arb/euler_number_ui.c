@@ -11,7 +11,9 @@
 
 #include "thread_support.h"
 #include "arb.h"
+#include "arb-impl.h"
 #include "acb_dirichlet.h"
+#include "bernoulli-impl.h"
 
 #ifdef __GNUC__
 # define log __builtin_log
@@ -44,7 +46,7 @@ arb_euler_number_mag(double n)
     return x;
 }
 
-void
+static void
 arb_euler_number_ui_beta(arb_t res, ulong n, slong prec)
 {
     slong pi_prec;
@@ -143,7 +145,7 @@ nmod_from_redc(ulong x, nmod_redc_t rmod)
     return nmod_redc(x, rmod.n, rmod.ninv);
 }
 
-ulong
+static ulong
 nmod_redc_pow_ui(ulong a, ulong exp, nmod_redc_t rmod)
 {
     ulong x;
@@ -170,8 +172,7 @@ nmod_redc_pow_ui(ulong a, ulong exp, nmod_redc_t rmod)
 ulong
 euler_mod_p_powsum_1(ulong n, ulong p)
 {
-    slong j;
-    ulong s, t;
+    ulong j, s, t;
     nmod_t mod;
 
     if (n % 2 == 1)
@@ -202,8 +203,8 @@ ulong
 euler_mod_p_powsum_noredc(ulong n, ulong p, const unsigned int * divtab)
 {
     unsigned int * pows;
-    slong i, N, horner_point;
-    ulong s, t, z;
+    slong i, horner_point;
+    ulong N, s, t, z;
     ulong v2n, power_of_two;
     nmod_t mod;
     TMP_INIT;
@@ -226,6 +227,7 @@ euler_mod_p_powsum_noredc(ulong n, ulong p, const unsigned int * divtab)
     s = z = 0;
 
     /* Evaluate as a polynomial in 2^n */
+    /* FIXME: This can be done quicker. This is 2**(flog2(N)). */
     power_of_two = 1;
     while (power_of_two * 2 <= N)
         power_of_two *= 2;
@@ -233,7 +235,7 @@ euler_mod_p_powsum_noredc(ulong n, ulong p, const unsigned int * divtab)
     horner_point = 1;
     v2n = nmod_pow_ui(2, n, mod);
 
-    for (i = 1; i <= N / 3; i += 2)
+    for (i = 1; (ulong) i <= N / 3; i += 2)
     {
         if (divtab[i] == 1)
             t = nmod_pow_ui(i, n, mod);
@@ -257,7 +259,7 @@ euler_mod_p_powsum_noredc(ulong n, ulong p, const unsigned int * divtab)
     }
 
     /* Same as above, but here we don't need to write the powers. */
-    for ( ; i <= N; i += 2)
+    for ( ; (ulong) i <= N; i += 2)
     {
         if (divtab[i] == 1)
             t = nmod_pow_ui(i, n, mod);
@@ -292,12 +294,12 @@ euler_mod_p_powsum_noredc(ulong n, ulong p, const unsigned int * divtab)
     return s;
 }
 
-ulong
+static ulong
 euler_mod_p_powsum_redc(ulong n, ulong p, const unsigned int * divtab)
 {
     unsigned int * pows;
-    slong i, N, horner_point;
-    ulong s, t, z;
+    slong i, horner_point;
+    ulong N, s, t, z;
     ulong v2n, power_of_two;
     nmod_t mod;
     nmod_redc_t rmod;
@@ -329,7 +331,7 @@ euler_mod_p_powsum_redc(ulong n, ulong p, const unsigned int * divtab)
     horner_point = 1;
     v2n = nmod_redc_pow_ui(nmod_to_redc(2, mod, rmod), n, rmod);
 
-    for (i = 1; i <= N / 3; i += 2)
+    for (i = 1; (ulong) i <= N / 3; i += 2)
     {
         if (divtab[i] == 1)
             t = nmod_redc_pow_ui(nmod_to_redc(i, mod, rmod), n, rmod);
@@ -354,7 +356,7 @@ euler_mod_p_powsum_redc(ulong n, ulong p, const unsigned int * divtab)
     }
 
     /* Same as above, but here we don't need to write the powers. */
-    for ( ; i <= N; i += 2)
+    for ( ; (ulong) i <= N; i += 2)
     {
         if (divtab[i] == 1)
             t = nmod_redc_pow_ui(nmod_to_redc(i, mod, rmod), n, rmod);
@@ -443,10 +445,6 @@ mod_p_worker(slong i, void * param)
 
 #define TIMING 0
 #define DEBUG 0
-
-/* todo: optimize basecase and move to flint */
-void
-_arb_tree_crt(fmpz_t r, fmpz_t m, nn_srcptr residues, nn_srcptr primes, slong len);
 
 void
 arb_fmpz_euler_number_ui_multi_mod(fmpz_t num, ulong n, double alpha)

@@ -11,6 +11,7 @@
 
 #include "fmpz_poly_mat.h"
 #include "ca_mat.h"
+#include "ca_mat-impl.h"
 
 static const fmpz * _nf_denref(const nf_elem_t a, const nf_t nf)
 {
@@ -65,7 +66,7 @@ get_lcm_rowwise(fmpz * Aden, const ca_mat_t A, ca_field_t K, slong bits_limit, c
             else
                 fmpz_lcm(Aden + i, Aden + i, _nf_denref(CA_NF_ELEM(ca_mat_entry(A, i, j)), CA_FIELD_NF(K)));
 
-            if (fmpz_bits(Aden + i) > bits_limit)
+            if (fmpz_bits(Aden + i) > (ulong) bits_limit)
                 return 0;
         }
     }
@@ -89,7 +90,7 @@ get_lcm_colwise(fmpz * Aden, const ca_mat_t A, ca_field_t K, slong bits_limit, c
             else
                 fmpz_lcm(Aden + i, Aden + i, _nf_denref(CA_NF_ELEM(ca_mat_entry(A, j, i)), CA_FIELD_NF(K)));
 
-            if (fmpz_bits(Aden + i) > bits_limit)
+            if (fmpz_bits(Aden + i) > (ulong) bits_limit)
                 return 0;
         }
     }

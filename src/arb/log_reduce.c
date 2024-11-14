@@ -11,6 +11,7 @@
 
 #include "fmpz_vec.h"
 #include "arb.h"
+#include "arb-impl.h"
 
 #ifdef __GNUC__
 # define floor __builtin_floor
@@ -228,7 +229,7 @@ static const double log_rel_epsilon_inv[] = {
     -1.11266647552533214e+55,
 };
 
-void
+static void
 _arb_log_reduce_fixed(slong * rel, const short * d, const double * epsilon, const double * epsilon_inv,
     const fmpz * alpha, const float * weights,
     slong num_alpha, const fmpz_t x, slong prec, double max_weight)
@@ -352,11 +353,11 @@ rel_product(fmpz_t p, fmpz_t q, const short * primes, const slong * rel, slong l
 }
 
 /* todo: error propagation */
-void
+static void
 _arb_exp_arf_precomp(arb_t res, const arf_t x, slong prec, int minus_one,
     slong num_logs, arb_srcptr logs, const short * primes,
     const float * weights,
-    const short * log_rel_d,
+    const short * lrd,
     const double * epsilon, const double * epsilon_inv, double max_weight)
 {
     arb_t t;
@@ -388,7 +389,7 @@ _arb_exp_arf_precomp(arb_t res, const arf_t x, slong prec, int minus_one,
         arf_get_fmpz_fixed_si(alpha + i, arb_midref(logs + i), -wp);
 
     arf_get_fmpz_fixed_si(r, x, -wp);
-    _arb_log_reduce_fixed(rel, log_rel_d, epsilon, epsilon_inv,
+    _arb_log_reduce_fixed(rel, lrd, epsilon, epsilon_inv,
         alpha, weights, num_logs, r, wp, max_weight);
 
     fmpz_clear(r);
@@ -435,8 +436,6 @@ _arb_exp_arf_precomp(arb_t res, const arf_t x, slong prec, int minus_one,
     fmpz_clear(q);
     arb_clear(t);
 }
-
-void arb_exp_arf_huge(arb_t z, const arf_t x, slong mag, slong prec, int minus_one);
 
 void
 arb_exp_arf_log_reduction(arb_t res, const arf_t x, slong prec, int minus_one)
@@ -788,11 +787,11 @@ gaussian_rel_product(fmpzi_t p, fmpzi_t q, const char * primes, const slong * re
     }
 }
 
-void
+static void
 _arb_sin_cos_arf_precomp(arb_t res1, arb_t res2, const arf_t x, slong prec,
-    slong num_logs, arb_srcptr logs, const char * primes,
+    slong num_logs, arb_srcptr logs, const char * FLINT_UNUSED(primes),
     const float * weights,
-    const short * log_rel_d,
+    const short * lrd,
     const double * epsilon, const double * epsilon_inv, double max_weight)
 {
     arb_t t;
@@ -801,7 +800,7 @@ _arb_sin_cos_arf_precomp(arb_t res1, arb_t res2, const arf_t x, slong prec,
     slong * rel;
     slong i;
     fmpz * alpha;
-    fmpz_t r;
+    fmpz_t rf;
     slong mag;
 
     arb_init(t);
@@ -809,7 +808,7 @@ _arb_sin_cos_arf_precomp(arb_t res1, arb_t res2, const arf_t x, slong prec,
     rel = flint_malloc(num_logs * sizeof(slong));
 
     alpha = _fmpz_vec_init(num_logs);
-    fmpz_init(r);
+    fmpz_init(rf);
 
     if (prec <= 10000)
         wp = 256;
@@ -821,9 +820,9 @@ _arb_sin_cos_arf_precomp(arb_t res1, arb_t res2, const arf_t x, slong prec,
     for (i = 0; i < num_logs; i++)
         arf_get_fmpz_fixed_si(alpha + i, arb_midref(logs + i), -wp);
 
-    arf_get_fmpz_fixed_si(r, x, -wp);
-    _arb_log_reduce_fixed(rel, log_rel_d, epsilon, epsilon_inv,
-        alpha, weights, num_logs, r, wp, max_weight);
+    arf_get_fmpz_fixed_si(rf, x, -wp);
+    _arb_log_reduce_fixed(rel, lrd, epsilon, epsilon_inv,
+        alpha, weights, num_logs, rf, wp, max_weight);
 
 /*
     {
@@ -834,7 +833,7 @@ _arb_sin_cos_arf_precomp(arb_t res1, arb_t res2, const arf_t x, slong prec,
     }
 */
 
-    fmpz_clear(r);
+    fmpz_clear(rf);
     _fmpz_vec_clear(alpha, num_logs);
 
     wp = prec + 5 + 2 * FLINT_BIT_COUNT(prec);

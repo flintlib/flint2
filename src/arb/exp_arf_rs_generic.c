@@ -9,14 +9,15 @@
     (at your option) any later version.  See <https://www.gnu.org/licenses/>.
 */
 
-#include "ulong_extras.h"
-#include "arb.h"
-
 #ifdef __GNUC__
 # define pow __builtin_pow
 #else
 # include <math.h>
 #endif
+
+#include "ulong_extras.h"
+#include "arb.h"
+#include "arb-impl.h"
 
 void
 arb_exp_taylor_sum_rs_generic(arb_t res, const arb_t x, slong N, slong prec)
@@ -154,14 +155,14 @@ arb_exp_arf_rs_generic(arb_t res, const arf_t x, slong prec, int minus_one)
        because the main exp function already takes care of it. */
     if (xmag < -prec - 4)
     {
-        mag_t t;
-        mag_init(t);
-        arf_get_mag(t, x);
-        mag_exp_tail(t, t, 2);
+        mag_t tm;
+        mag_init(tm);
+        arf_get_mag(tm, x);
+        mag_exp_tail(tm, tm, 2);
         arb_set_arf(res, x);
         arb_add_ui(res, res, minus_one ? 0 : 1, prec);
-        arb_add_error_mag(res, t);
-        mag_clear(t);
+        arb_add_error_mag(res, tm);
+        mag_clear(tm);
         return;
     }
 

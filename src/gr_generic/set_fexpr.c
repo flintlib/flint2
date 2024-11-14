@@ -15,6 +15,7 @@
 #include "gr.h"
 #include "gr_vec.h"
 #include "gr_special.h"
+#include "gr_generic.h"
 
 #define BINARY_OP(gr_func) \
     if (nargs == 2) \
@@ -175,7 +176,6 @@ gr_generic_set_fexpr(gr_ptr res, fexpr_vec_t inputs, gr_vec_t outputs, const fex
     {
         fexpr_t func, arg;
         slong op, i, nargs;
-        int status;
         gr_ptr t;
 
         nargs = fexpr_nargs(expr);

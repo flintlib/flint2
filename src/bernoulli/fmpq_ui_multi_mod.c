@@ -12,6 +12,7 @@
 #include "thread_support.h"
 #include "ulong_extras.h"
 #include "bernoulli.h"
+#include "bernoulli-impl.h"
 #include "arb.h"
 
 #define TIMING 0
@@ -32,14 +33,14 @@ typedef struct
 crt_args_t;
 
 static void
-crt_init(crt_res_t * x, crt_args_t * args)
+crt_init(crt_res_t * x, crt_args_t * FLINT_UNUSED(args))
 {
     fmpz_init(&x->r);
     fmpz_init(&x->m);
 }
 
 static void
-crt_clear(crt_res_t * x, crt_args_t * args)
+crt_clear(crt_res_t * x, crt_args_t * FLINT_UNUSED(args))
 {
     fmpz_clear(&x->r);
     fmpz_clear(&x->m);
@@ -58,7 +59,7 @@ _fmpz_crt_combine(fmpz_t r1r2, fmpz_t m1m2, const fmpz_t r1, const fmpz_t m1, co
 }
 
 static void
-crt_combine(crt_res_t * res, crt_res_t * left, crt_res_t * right, crt_args_t * args)
+crt_combine(crt_res_t * res, crt_res_t * left, crt_res_t * right, crt_args_t * FLINT_UNUSED(args))
 {
     _fmpz_crt_combine(&res->r, &res->m, &left->r, &left->m, &right->r, &right->m);
 }

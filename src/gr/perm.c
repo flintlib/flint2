@@ -13,6 +13,7 @@
 #include "fmpz.h"
 #include "fmpz_mat.h"
 #include "gr.h"
+#include "gr_generic.h"
 
 #define PERM_N(ctx) (*((ulong *) (ctx)))
 
@@ -25,7 +26,7 @@ perm_struct;
 typedef perm_struct perm_t[1];
 
 
-int _gr_perm_ctx_write(gr_stream_t out, gr_ctx_t ctx)
+static int _gr_perm_ctx_write(gr_stream_t out, gr_ctx_t ctx)
 {
     gr_stream_write(out, "Symmetric group S_");
     gr_stream_write_ui(out, PERM_N(ctx));
@@ -33,32 +34,32 @@ int _gr_perm_ctx_write(gr_stream_t out, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_perm_init(perm_t res, gr_ctx_t ctx)
 {
     res->entries = _perm_init(PERM_N(ctx));
     return GR_SUCCESS;
 }
 
-int
-_gr_perm_clear(perm_t res, gr_ctx_t ctx)
+static int
+_gr_perm_clear(perm_t res, gr_ctx_t FLINT_UNUSED(ctx))
 {
     _perm_clear(res->entries);
     return GR_SUCCESS;
 }
 
-void
-_gr_perm_swap(perm_t x, perm_t y, gr_ctx_t ctx)
+static void
+_gr_perm_swap(perm_t x, perm_t y, gr_ctx_t FLINT_UNUSED(ctx))
 {
     perm_struct t = *x;
     *x = *y;
     *y = t;
 }
 
-int
+static int
 _gr_perm_write(gr_stream_t out, perm_t x, gr_ctx_t ctx)
 {
-    slong i;
+    ulong i;
 
     gr_stream_write(out, "[");
 
@@ -74,27 +75,27 @@ _gr_perm_write(gr_stream_t out, perm_t x, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_perm_randtest(perm_t res, flint_rand_t state, gr_ctx_t ctx)
 {
     _perm_randtest(res->entries, PERM_N(ctx), state);
     return GR_SUCCESS;
 }
 
-truth_t
+static truth_t
 _gr_perm_equal(const perm_t x, const perm_t y, gr_ctx_t ctx)
 {
     return _perm_equal(x->entries, y->entries, PERM_N(ctx)) ? T_TRUE : T_FALSE;
 }
 
-int
+static int
 _gr_perm_set(perm_t res, const perm_t x, gr_ctx_t ctx)
 {
     _perm_set(res->entries, x->entries, PERM_N(ctx));
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_perm_set_other(perm_t res, gr_srcptr x, gr_ctx_t x_ctx, gr_ctx_t ctx)
 {
     if (x_ctx->which_ring == GR_CTX_PERM)
@@ -168,14 +169,15 @@ _gr_perm_set_other(perm_t res, gr_srcptr x, gr_ctx_t x_ctx, gr_ctx_t ctx)
     }
 }
 
-int
+static int
 _gr_perm_one(perm_t res, gr_ctx_t ctx)
 {
     _perm_one(res->entries, PERM_N(ctx));
     return GR_SUCCESS;
 }
 
-truth_t
+#if 0
+static truth_t
 _gr_perm_is_one(const perm_t x, gr_ctx_t ctx)
 {
     slong i, n = PERM_N(ctx);
@@ -186,8 +188,9 @@ _gr_perm_is_one(const perm_t x, gr_ctx_t ctx)
 
     return T_UNKNOWN;
 }
+#endif
 
-int
+static int
 _gr_perm_mul(perm_t res, const perm_t x, const perm_t y, gr_ctx_t ctx)
 {
     _perm_compose(res->entries, x->entries, y->entries, PERM_N(ctx));
@@ -195,7 +198,7 @@ _gr_perm_mul(perm_t res, const perm_t x, const perm_t y, gr_ctx_t ctx)
 }
 
 /* todo: should be generic. also want left division */
-int
+static int
 _gr_perm_div(perm_t res, const perm_t x, const perm_t y, gr_ctx_t ctx)
 {
     slong n = PERM_N(ctx);
@@ -207,7 +210,7 @@ _gr_perm_div(perm_t res, const perm_t x, const perm_t y, gr_ctx_t ctx)
     return GR_SUCCESS;
 }
 
-int
+static int
 _gr_perm_inv(perm_t res, const perm_t x, gr_ctx_t ctx)
 {
     _perm_inv(res->entries, x->entries, PERM_N(ctx));

@@ -11,6 +11,7 @@
 
 #include "double_extras.h"
 #include "mag.h"
+#include "mag-impl.h"
 
 static const double inverse_factorials[] = {
     1.0,

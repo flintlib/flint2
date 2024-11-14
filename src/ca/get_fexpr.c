@@ -12,11 +12,12 @@
 #include "fexpr.h"
 #include "fexpr_builtin.h"
 #include "ca.h"
+#include "ca-impl.h"
 #include "ca_ext.h"
 #include "fexpr.h"
 #include "fexpr_builtin.h"
 
-void
+static void
 _fexpr_set_fmpz_poly_decreasing(fexpr_t res, const fmpz * coeffs, slong len, const fexpr_t var)
 {
     slong i, j, num_terms;
@@ -146,9 +147,6 @@ fexpr_set_nf_elem(fexpr_t res, const nf_elem_t a, const nf_t nf, const fexpr_t v
 }
 
 void
-ca_all_extensions(ca_ext_ptr ** extensions, slong * len, const ca_t x, ca_ctx_t ctx);
-
-void
 _ca_get_fexpr_given_ext(fexpr_t res, const ca_t x, ulong flags,
         ca_ext_ptr * ext, slong num_ext, const fexpr_struct * ext_vars, ca_ctx_t ctx)
 {
@@ -239,7 +237,7 @@ _ca_get_fexpr_given_ext(fexpr_t res, const ca_t x, ulong flags,
     else
     {
         fexpr_vec_t xvars;
-        slong i, j, nvars;
+        slong j, nvars;
 
         nvars = CA_FIELD_LENGTH(K);
 
@@ -406,21 +404,21 @@ ca_get_fexpr(fexpr_t res, const ca_t x, ulong flags, ca_ctx_t ctx)
 
     if (CA_IS_SIGNED_INF(x))
     {
-        ca_t t;
-        ca_init(t, ctx);
-        ca_sgn(t, x, ctx);
+        ca_t tc;
+        ca_init(tc, ctx);
+        ca_sgn(tc, x, ctx);
 
-        if (CA_IS_QQ(t, ctx))
+        if (CA_IS_QQ(tc, ctx))
         {
             fexpr_set_symbol_builtin(res, FEXPR_Infinity);
-            if (!fmpq_is_one(CA_FMPQ(t)))
+            if (!fmpq_is_one(CA_FMPQ(tc)))
                 fexpr_neg(res, res);
 
-            ca_clear(t, ctx);
+            ca_clear(tc, ctx);
             return;
         }
 
-        ca_clear(t, ctx);
+        ca_clear(tc, ctx);
     }
 
     ca_all_extensions(&ext, &num_ext, x, ctx);

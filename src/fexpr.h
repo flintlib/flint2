@@ -280,6 +280,8 @@ char * fexpr_get_symbol_str(const fexpr_t expr);
 void fexpr_set_string(fexpr_t res, const char * s);
 char * fexpr_get_string(const fexpr_t expr);
 
+char * fexpr_get_decimal_str(const fexpr_t expr, slong digits, ulong flags);
+
 slong fexpr_depth(const fexpr_t expr);
 slong fexpr_num_leaves(const fexpr_t expr);
 
@@ -310,7 +312,7 @@ fexpr_is_builtin_symbol(const fexpr_t expr, slong i)
 {
     ulong head;
     head = expr->data[0];
-    return (FEXPR_TYPE(head) == FEXPR_TYPE_SMALL_SYMBOL) && (((head >> 8) & 0xff) == 0) && (FEXPR_BUILTIN_ID(head) == i);
+    return (FEXPR_TYPE(head) == FEXPR_TYPE_SMALL_SYMBOL) && (((head >> 8) & 0xff) == 0) && (FEXPR_BUILTIN_ID(head) == (ulong) i);
 }
 
 /* todo: document, test */

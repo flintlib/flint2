@@ -11,6 +11,7 @@
 
 #include "arb.h"
 #include "partitions.h"
+#include "partitions-impl.h"
 
 #ifdef __GNUC__
 # define sqrt __builtin_sqrt
@@ -43,9 +44,7 @@ partitions_lookup[NUMBER_OF_SMALL_PARTITIONS] =
     UWORD(2552338241),UWORD(2841940500),UWORD(3163127352),UWORD(3519222692),UWORD(3913864295)
 };
 
-slong partitions_hrr_needed_terms(double n);
-
-void
+static void
 partitions_fmpz_fmpz_hrr(fmpz_t p, const fmpz_t n, int use_doubles)
 {
     arb_t x;
@@ -99,7 +98,7 @@ partitions_vec(nn_ptr v, slong len)
 /* The floor+vec method *requires* n <= 1498 for floor(p(n)/2^64)
    to be equal to floor(T/2^64). It is faster up to n ~= 1200.
    With doubles, it is faster up to n ~= 500. */
-void
+static void
 _partitions_fmpz_ui(fmpz_t res, ulong n, int use_doubles)
 {
     if (n < NUMBER_OF_SMALL_PARTITIONS)

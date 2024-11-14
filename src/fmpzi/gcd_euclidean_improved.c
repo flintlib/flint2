@@ -11,14 +11,7 @@
 
 #include <math.h>
 #include "fmpzi.h"
-
-#if FLINT_BITS == 64
-#define GCD_MAX_D WORD(1125899906842623)
-#define GCD_MIN_D WORD(-1125899906842623)
-#else
-#define GCD_MAX_D COEFF_MAX
-#define GCD_MIN_D COEFF_MIN
-#endif
+#include "fmpzi-impl.h"
 
 void
 _fmpzi_gcd_dddd(fmpzi_t res, double a, double b, double c, double d)
